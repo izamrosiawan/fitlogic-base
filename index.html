@@ -3,28 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="FitLogic – Kalkulator diet cerdas berbasis rumus Mifflin-St Jeor. Hitung BMI, BMR, TDEE, dan target kalori harianmu." />
-  <title>FitLogic – Kalkulator Diet Cerdas</title>
+  <meta name="description" content="FitLogic – Kalkulator diet berbasis rumus Mifflin-St Jeor. Hitung BMI, BMR, TDEE, dan target kalori harian." />
+  <title>FitLogic – Kalkulator Diet</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- navbar -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-inner">
-      <a href="#home" class="nav-logo" onclick="showPage('home')">
-        <span class="logo-icon">⚡</span> FitLogic
-      </a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#home"       class="nav-link active" data-page="home"        onclick="showPage('home')">Beranda</a></li>
-        <li><a href="#calculator" class="nav-link"        data-page="calculator"  onclick="showPage('calculator')">Kalkulator</a></li>
-        <li><a href="#result"     class="nav-link"        data-page="result"      onclick="showPage('result')">Hasil</a></li>
-        <li><a href="#dashboard"  class="nav-link"        data-page="dashboard"   onclick="showPage('dashboard')">Dashboard</a></li>
+  <!-- black global nav, 44px -->
+  <nav class="gnav" id="navbar">
+    <div class="gnav-wrap">
+      <a class="gnav-brand" onclick="showPage('home')">FitLogic</a>
+      <ul class="gnav-links" id="navLinks">
+        <li><a class="nav-link" data-page="home"        onclick="showPage('home')">Beranda</a></li>
+        <li><a class="nav-link" data-page="calculator"  onclick="showPage('calculator')">Kalkulator</a></li>
+        <li><a class="nav-link" data-page="result"      onclick="showPage('result')">Hasil</a></li>
+        <li><a class="nav-link" data-page="dashboard"   onclick="showPage('dashboard')">Dashboard</a></li>
       </ul>
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <button class="gnav-ham" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -32,131 +30,126 @@
 
   <!-- halaman beranda -->
   <section class="page active" id="page-home">
-    <div class="hero">
-      <div class="hero-content">
-        <div class="hero-badge">🥗 Nutrisi Cerdas</div>
-        <h1 class="hero-title">Capai Target Diet<br /><span class="gradient-text">dengan FitLogic</span></h1>
+
+    <!-- hero: dark tile penuh viewport -->
+    <div class="hero-tile">
+      <div class="tile-inner">
+        <p class="eyebrow">Kalkulator Nutrisi Cerdas</p>
+        <h1 class="hero-hl">FitLogic.</h1>
+        <p class="hero-tagline">Rencanakan makan. Raih target.</p>
         <p class="hero-desc">
-          Hitung BMI, BMR, TDEE, dan target kalori harian secara akurat menggunakan
-          rumus <strong>Mifflin-St Jeor</strong>. Didukung visualisasi data interaktif untuk
-          membantu perjalanan dietmu.
+          Hitung BMI, BMR, TDEE, dan target kalori harian<br>
+          menggunakan rumus Mifflin-St Jeor.
         </p>
-        <div class="hero-actions">
-          <button class="btn btn-primary" onclick="showPage('calculator')">
-            Mulai Hitung →
-          </button>
-          <a href="#features" class="btn btn-ghost">Pelajari Lebih</a>
+        <div class="cta-row">
+          <button class="btn-primary-pill" onclick="showPage('calculator')">Mulai Hitung</button>
+          <a href="#features" class="btn-ghost-dark">Pelajari Lebih</a>
         </div>
-        <div class="hero-stats">
-          <div class="stat-pill"><span class="stat-num">BMI</span><span class="stat-label">Body Mass Index</span></div>
-          <div class="stat-pill"><span class="stat-num">BMR</span><span class="stat-label">Basal Metabolic Rate</span></div>
-          <div class="stat-pill"><span class="stat-num">TDEE</span><span class="stat-label">Total Daily Energy</span></div>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <div class="visual-card floating">
-          <div class="vc-header">
-            <span class="vc-dot green"></span>
-            <span class="vc-dot yellow"></span>
-            <span class="vc-dot red"></span>
+        <div class="hero-badges">
+          <div class="badge">
+            <span class="badge-num">BMI</span>
+            <span class="badge-label">Body Mass Index</span>
           </div>
-          <div class="vc-metric"><span class="vc-label">BMI</span><span class="vc-val">22.4</span><span class="vc-status normal">Normal</span></div>
-          <div class="vc-metric"><span class="vc-label">Target Kalori</span><span class="vc-val">1,850 kcal</span></div>
-          <div class="vc-bar-wrap">
-            <div class="vc-bar"><div class="vc-bar-inner" style="width:60%" data-color="protein"></div></div>
-            <div class="vc-bar"><div class="vc-bar-inner" style="width:35%" data-color="carbs"></div></div>
-            <div class="vc-bar"><div class="vc-bar-inner" style="width:25%" data-color="fat"></div></div>
+          <div class="badge">
+            <span class="badge-num">BMR</span>
+            <span class="badge-label">Basal Metabolic Rate</span>
+          </div>
+          <div class="badge">
+            <span class="badge-num">TDEE</span>
+            <span class="badge-label">Total Daily Energy</span>
           </div>
         </div>
       </div>
     </div>
 
-    <section id="features" class="features-section">
-      <div class="section-header">
-        <h2>Apa yang Bisa FitLogic Lakukan?</h2>
-        <p>Semua yang kamu butuhkan untuk memulai perjalanan diet yang terencana.</p>
+    <!-- fitur: section parchment -->
+    <div id="features" class="features-section">
+      <div class="section-wrap">
+        <h2 class="section-hl">Apa yang bisa FitLogic lakukan?</h2>
+        <p class="section-lead">Semua yang kamu butuhkan untuk memulai perjalanan diet yang terencana.</p>
+        <div class="feat-grid">
+          <div class="util-card">
+            <span class="feat-icon">📊</span>
+            <h3>Kalkulasi Akurat</h3>
+            <p>Menggunakan rumus Mifflin-St Jeor yang diakui secara ilmiah untuk hasil yang presisi.</p>
+          </div>
+          <div class="util-card">
+            <span class="feat-icon">🍎</span>
+            <h3>Makronutrisi</h3>
+            <p>Pembagian protein, karbohidrat, dan lemak otomatis sesuai target dietmu.</p>
+          </div>
+          <div class="util-card">
+            <span class="feat-icon">🎯</span>
+            <h3>Target Personal</h3>
+            <p>Pilih Cutting, Maintenance, atau Bulking sesuai tujuan dan kondisimu.</p>
+          </div>
+          <div class="util-card">
+            <span class="feat-icon">📈</span>
+            <h3>Visualisasi Data</h3>
+            <p>Grafik interaktif untuk memantau progres dan distribusi kalori harianmu.</p>
+          </div>
+        </div>
       </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3>Kalkulasi Akurat</h3>
-          <p>Menggunakan rumus Mifflin-St Jeor yang diakui secara ilmiah untuk hasil yang presisi.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🍎</div>
-          <h3>Makronutrisi</h3>
-          <p>Pembagian protein, karbohidrat, dan lemak otomatis sesuai target dietmu.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎯</div>
-          <h3>Target Personal</h3>
-          <p>Pilih antara Cutting, Maintenance, atau Bulking untuk target kalori yang tepat.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📈</div>
-          <h3>Visualisasi Data</h3>
-          <p>Grafik interaktif untuk memantau progres dan distribusi kalori harianmu.</p>
-        </div>
-      </div>
-    </section>
+    </div>
+
   </section>
 
   <!-- halaman kalkulator -->
   <section class="page" id="page-calculator">
-    <div class="page-container">
-      <div class="page-header">
-        <h1>Kalkulator Diet</h1>
-        <p>Isi data dirimu dengan lengkap dan benar untuk hasil yang akurat.</p>
+    <div class="page-wrap">
+      <div class="page-heading">
+        <h1 class="page-hl">Kalkulator Diet</h1>
+        <p class="page-sub">Isi data dirimu dengan lengkap untuk hasil yang akurat.</p>
       </div>
 
       <div class="calc-layout">
-        <form class="calc-form card" id="calcForm" novalidate>
+        <form class="form-card" id="calcForm" novalidate>
 
           <div class="form-group" id="fg-name">
             <label for="inputNama" class="form-label">Nama Lengkap</label>
-            <input type="text" id="inputNama" class="form-input" placeholder="Contoh: Budi Santoso" autocomplete="off" />
+            <input type="text" id="inputNama" class="form-input" placeholder="Budi Santoso" autocomplete="off" />
             <span class="form-error" id="err-name"></span>
           </div>
 
           <div class="form-group" id="fg-age">
-            <label for="inputUmur" class="form-label">Umur <span class="unit">(tahun)</span></label>
-            <input type="number" id="inputUmur" class="form-input" placeholder="Contoh: 22" min="1" max="120" />
+            <label for="inputUmur" class="form-label">Umur <span class="unit-note">tahun</span></label>
+            <input type="number" id="inputUmur" class="form-input" placeholder="22" min="1" max="120" />
             <span class="form-error" id="err-age"></span>
           </div>
 
           <div class="form-group" id="fg-gender">
             <label class="form-label">Jenis Kelamin</label>
             <div class="radio-group">
-              <label class="radio-option" id="radio-male">
+              <label class="radio-opt" id="radio-male">
                 <input type="radio" name="gender" value="male" id="genderMale" />
-                <span class="radio-custom"></span>
-                <span class="radio-text">♂ Laki-laki</span>
+                <span class="radio-box"></span>
+                <span>♂ Laki-laki</span>
               </label>
-              <label class="radio-option" id="radio-female">
+              <label class="radio-opt" id="radio-female">
                 <input type="radio" name="gender" value="female" id="genderFemale" />
-                <span class="radio-custom"></span>
-                <span class="radio-text">♀ Perempuan</span>
+                <span class="radio-box"></span>
+                <span>♀ Perempuan</span>
               </label>
             </div>
             <span class="form-error" id="err-gender"></span>
           </div>
 
           <div class="form-group" id="fg-height">
-            <label for="inputTinggi" class="form-label">Tinggi Badan <span class="unit">(cm)</span></label>
-            <input type="number" id="inputTinggi" class="form-input" placeholder="Contoh: 170" min="1" />
+            <label for="inputTinggi" class="form-label">Tinggi Badan <span class="unit-note">cm</span></label>
+            <input type="number" id="inputTinggi" class="form-input" placeholder="170" min="1" />
             <span class="form-error" id="err-height"></span>
           </div>
 
           <div class="form-group" id="fg-weight">
-            <label for="inputBerat" class="form-label">Berat Badan <span class="unit">(kg)</span></label>
-            <input type="number" id="inputBerat" class="form-input" placeholder="Contoh: 65" min="1" step="0.1" />
+            <label for="inputBerat" class="form-label">Berat Badan <span class="unit-note">kg</span></label>
+            <input type="number" id="inputBerat" class="form-input" placeholder="65" min="1" step="0.1" />
             <span class="form-error" id="err-weight"></span>
           </div>
 
           <div class="form-group" id="fg-activity">
             <label for="selectAktivitas" class="form-label">Tingkat Aktivitas</label>
             <select id="selectAktivitas" class="form-select">
-              <option value="">-- Pilih Aktivitas --</option>
+              <option value="">Pilih aktivitas</option>
               <option value="1.2">Sedentary – Tidak banyak bergerak</option>
               <option value="1.375">Ringan – Olahraga 1–3x/minggu</option>
               <option value="1.55">Sedang – Olahraga 3–5x/minggu</option>
@@ -168,32 +161,32 @@
 
           <div class="form-group" id="fg-goal">
             <label class="form-label">Target Diet</label>
-            <div class="goal-options">
-              <label class="goal-option" data-value="cutting">
+            <div class="goal-grid">
+              <label class="goal-chip" data-value="cutting">
                 <input type="radio" name="goal" value="cutting" id="goalCutting" />
-                <div class="goal-card">
+                <div class="goal-chip-inner">
                   <span class="goal-icon">🔥</span>
-                  <span class="goal-title">Cutting</span>
-                  <span class="goal-desc">Turunkan berat badan</span>
-                  <span class="goal-adj">–500 kcal</span>
+                  <span class="goal-name">Cutting</span>
+                  <span class="goal-sub">Turunkan berat</span>
+                  <span class="goal-delta">–500 kcal</span>
                 </div>
               </label>
-              <label class="goal-option" data-value="maintenance">
+              <label class="goal-chip" data-value="maintenance">
                 <input type="radio" name="goal" value="maintenance" id="goalMaintenance" />
-                <div class="goal-card">
+                <div class="goal-chip-inner">
                   <span class="goal-icon">⚖️</span>
-                  <span class="goal-title">Maintenance</span>
-                  <span class="goal-desc">Jaga berat badan</span>
-                  <span class="goal-adj">±0 kcal</span>
+                  <span class="goal-name">Maintenance</span>
+                  <span class="goal-sub">Jaga berat</span>
+                  <span class="goal-delta">±0 kcal</span>
                 </div>
               </label>
-              <label class="goal-option" data-value="bulking">
+              <label class="goal-chip" data-value="bulking">
                 <input type="radio" name="goal" value="bulking" id="goalBulking" />
-                <div class="goal-card">
+                <div class="goal-chip-inner">
                   <span class="goal-icon">💪</span>
-                  <span class="goal-title">Bulking</span>
-                  <span class="goal-desc">Tambah massa otot</span>
-                  <span class="goal-adj">+500 kcal</span>
+                  <span class="goal-name">Bulking</span>
+                  <span class="goal-sub">Tambah massa</span>
+                  <span class="goal-delta">+500 kcal</span>
                 </div>
               </label>
             </div>
@@ -201,37 +194,34 @@
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="btn btn-primary btn-full" id="btnHitung">
-              Hitung Sekarang ✓
-            </button>
-            <button type="button" class="btn btn-ghost btn-full" id="btnReset" onclick="resetForm()">
-              Reset
-            </button>
+            <button type="submit" class="btn-primary-pill btn-full" id="btnHitung">Hitung Sekarang</button>
+            <button type="button" class="btn-ghost-ink btn-full" id="btnReset" onclick="resetForm()">Reset</button>
           </div>
+
         </form>
 
         <!-- sidebar info rumus dan kategori BMI -->
-        <aside class="calc-info">
-          <div class="info-card card">
-            <h3>ℹ️ Rumus yang Digunakan</h3>
-            <div class="formula-block">
-              <p class="formula-title">Mifflin-St Jeor</p>
-              <code>BMR (Pria) = 10W + 6.25H − 5A + 5</code>
-              <code>BMR (Wanita) = 10W + 6.25H − 5A − 161</code>
-              <p class="formula-note">W = Berat (kg), H = Tinggi (cm), A = Umur</p>
+        <aside class="calc-aside">
+          <div class="util-card">
+            <h3 class="aside-hl">Rumus yang Digunakan</h3>
+            <div class="formula-box">
+              <p class="formula-label">Mifflin-St Jeor</p>
+              <code>Pria: 10W + 6.25H − 5A + 5</code>
+              <code>Wanita: 10W + 6.25H − 5A − 161</code>
+              <p class="formula-note">W = Berat (kg) · H = Tinggi (cm) · A = Umur</p>
             </div>
-            <div class="formula-block">
-              <p class="formula-title">TDEE</p>
+            <div class="formula-box">
+              <p class="formula-label">TDEE</p>
               <code>TDEE = BMR × Faktor Aktivitas</code>
             </div>
           </div>
-          <div class="info-card card">
-            <h3>📏 Kategori BMI</h3>
-            <div class="bmi-table">
-              <div class="bmi-row"><span class="bmi-tag underweight">Kurus</span><span>&lt; 18.5</span></div>
-              <div class="bmi-row"><span class="bmi-tag normal">Normal</span><span>18.5 – 24.9</span></div>
-              <div class="bmi-row"><span class="bmi-tag overweight">Gemuk</span><span>25 – 29.9</span></div>
-              <div class="bmi-row"><span class="bmi-tag obese">Obesitas</span><span>≥ 30</span></div>
+          <div class="util-card">
+            <h3 class="aside-hl">Kategori BMI</h3>
+            <div class="bmi-list">
+              <div class="bmi-row"><span class="bmi-chip chip-blue">Kurus</span><span>&lt; 18.5</span></div>
+              <div class="bmi-row"><span class="bmi-chip chip-green">Normal</span><span>18.5 – 24.9</span></div>
+              <div class="bmi-row"><span class="bmi-chip chip-orange">Gemuk</span><span>25 – 29.9</span></div>
+              <div class="bmi-row"><span class="bmi-chip chip-red">Obesitas</span><span>≥ 30</span></div>
             </div>
           </div>
         </aside>
@@ -241,200 +231,184 @@
 
   <!-- halaman hasil perhitungan -->
   <section class="page" id="page-result">
-    <div class="page-container">
-      <div class="page-header">
-        <h1>Hasil Perhitungan</h1>
-        <p id="resultSubtitle">Berikut adalah hasil kalkulasi berdasarkan data yang kamu masukkan.</p>
+    <div class="page-wrap">
+      <div class="page-heading">
+        <h1 class="page-hl">Hasil Perhitungan</h1>
+        <p class="page-sub" id="resultSubtitle">Berikut hasil kalkulasi berdasarkan data yang kamu masukkan.</p>
       </div>
 
-      <div class="result-hero-card card" id="resultHeroCard">
-        <div class="rhc-left">
-          <div class="rhc-name" id="rhcName">–</div>
-          <div class="rhc-goal" id="rhcGoal">–</div>
+      <!-- banner ringkasan: solid blue -->
+      <div class="result-banner" id="resultHeroCard">
+        <div class="rb-left">
+          <div class="rb-name" id="rhcName">–</div>
+          <div class="rb-goal" id="rhcGoal">–</div>
         </div>
-        <div class="rhc-right">
-          <div class="rhc-calories">
-            <span class="rhc-cal-num" id="rhcCalories">–</span>
-            <span class="rhc-cal-unit">kcal / hari</span>
-          </div>
-          <div class="rhc-cal-label">Target Kalori</div>
-        </div>
-      </div>
-
-      <div class="result-cards">
-        <div class="result-card card" id="rcBMI">
-          <div class="rc-icon">📏</div>
-          <div class="rc-content">
-            <span class="rc-label">BMI</span>
-            <span class="rc-value" id="valBMI">–</span>
-            <span class="rc-unit" id="catBMI">–</span>
-          </div>
-          <div class="rc-progress">
-            <div class="rc-prog-bar" id="progBMI"></div>
-          </div>
-        </div>
-        <div class="result-card card">
-          <div class="rc-icon">🔥</div>
-          <div class="rc-content">
-            <span class="rc-label">BMR</span>
-            <span class="rc-value" id="valBMR">–</span>
-            <span class="rc-unit">kcal / hari (istirahat)</span>
-          </div>
-        </div>
-        <div class="result-card card">
-          <div class="rc-icon">⚡</div>
-          <div class="rc-content">
-            <span class="rc-label">TDEE</span>
-            <span class="rc-value" id="valTDEE">–</span>
-            <span class="rc-unit">kcal / hari (aktif)</span>
-          </div>
-        </div>
-        <div class="result-card card highlight-card">
-          <div class="rc-icon">🎯</div>
-          <div class="rc-content">
-            <span class="rc-label">Target Kalori</span>
-            <span class="rc-value" id="valTarget">–</span>
-            <span class="rc-unit">kcal / hari</span>
-          </div>
+        <div class="rb-right">
+          <div class="rb-num" id="rhcCalories">–</div>
+          <div class="rb-unit">kcal / hari</div>
+          <div class="rb-label">Target Kalori</div>
         </div>
       </div>
 
-      <div class="macro-section card" id="macroSection">
+      <!-- 4 stat cards -->
+      <div class="result-grid">
+        <div class="stat-card" id="rcBMI">
+          <div class="stat-top">
+            <div class="stat-icon">📏</div>
+            <div class="stat-body">
+              <span class="stat-label">BMI</span>
+              <span class="stat-val" id="valBMI">–</span>
+              <span class="stat-note" id="catBMI">–</span>
+            </div>
+          </div>
+          <div class="stat-bar-wrap">
+            <div class="stat-bar-inner" id="progBMI"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-body">
+              <span class="stat-label">BMR</span>
+              <span class="stat-val" id="valBMR">–</span>
+              <span class="stat-note">kcal/hari (istirahat)</span>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-body">
+              <span class="stat-label">TDEE</span>
+              <span class="stat-val" id="valTDEE">–</span>
+              <span class="stat-note">kcal/hari (aktif)</span>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card stat-card-hl">
+          <div class="stat-top">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-body">
+              <span class="stat-label">Target Kalori</span>
+              <span class="stat-val" id="valTarget">–</span>
+              <span class="stat-note">kcal/hari</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- pembagian makronutrisi -->
+      <div class="macro-card util-card" id="macroSection">
         <h2>Pembagian Makronutrisi</h2>
         <p class="macro-sub">Rekomendasi berdasarkan target kalori harianmu</p>
         <div class="macro-bars">
-          <div class="macro-item">
-            <div class="macro-header">
-              <span class="macro-name">🥩 Protein</span>
-              <span class="macro-val" id="macroProtein">–</span>
-            </div>
-            <div class="macro-track"><div class="macro-fill protein-fill" id="fillProtein"></div></div>
+          <div class="macro-row">
+            <div class="macro-hd"><span>🥩 Protein</span><span id="macroProtein">–</span></div>
+            <div class="macro-track"><div class="macro-fill fill-green" id="fillProtein"></div></div>
           </div>
-          <div class="macro-item">
-            <div class="macro-header">
-              <span class="macro-name">🌾 Karbohidrat</span>
-              <span class="macro-val" id="macroCarbs">–</span>
-            </div>
-            <div class="macro-track"><div class="macro-fill carbs-fill" id="fillCarbs"></div></div>
+          <div class="macro-row">
+            <div class="macro-hd"><span>🌾 Karbohidrat</span><span id="macroCarbs">–</span></div>
+            <div class="macro-track"><div class="macro-fill fill-orange" id="fillCarbs"></div></div>
           </div>
-          <div class="macro-item">
-            <div class="macro-header">
-              <span class="macro-name">🥑 Lemak</span>
-              <span class="macro-val" id="macroFat">–</span>
-            </div>
-            <div class="macro-track"><div class="macro-fill fat-fill" id="fillFat"></div></div>
+          <div class="macro-row">
+            <div class="macro-hd"><span>🥑 Lemak</span><span id="macroFat">–</span></div>
+            <div class="macro-track"><div class="macro-fill fill-purple" id="fillFat"></div></div>
           </div>
         </div>
       </div>
 
-      <div class="result-actions">
-        <button class="btn btn-primary" onclick="showPage('dashboard')">Lihat Dashboard →</button>
-        <button class="btn btn-ghost" onclick="showPage('calculator')">Hitung Ulang</button>
+      <div class="page-actions">
+        <button class="btn-primary-pill" onclick="showPage('dashboard')">Lihat Dashboard</button>
+        <button class="btn-ghost-ink" onclick="showPage('calculator')">Hitung Ulang</button>
       </div>
     </div>
   </section>
 
   <!-- halaman dashboard -->
   <section class="page" id="page-dashboard">
-    <div class="page-container">
-      <div class="page-header">
-        <h1>Dashboard</h1>
-        <p>Visualisasi data nutrisi dan progres diet harianmu.</p>
+    <div class="page-wrap">
+      <div class="page-heading">
+        <h1 class="page-hl">Dashboard</h1>
+        <p class="page-sub">Visualisasi data nutrisi dan progres diet harianmu.</p>
       </div>
 
-      <div class="dash-summary" id="dashSummary">
-        <div class="sum-chip"><span class="sum-label">Nama</span><span class="sum-val" id="dNama">–</span></div>
-        <div class="sum-chip"><span class="sum-label">Target</span><span class="sum-val" id="dGoal">–</span></div>
-        <div class="sum-chip"><span class="sum-label">BMI</span><span class="sum-val" id="dBMI">–</span></div>
-        <div class="sum-chip"><span class="sum-label">Kalori/hari</span><span class="sum-val" id="dKalori">–</span></div>
+      <div class="summary-row" id="dashSummary">
+        <div class="sum-chip"><span class="sc-label">Nama</span><span class="sc-val" id="dNama">–</span></div>
+        <div class="sum-chip"><span class="sc-label">Target</span><span class="sc-val" id="dGoal">–</span></div>
+        <div class="sum-chip"><span class="sc-label">BMI</span><span class="sc-val" id="dBMI">–</span></div>
+        <div class="sum-chip"><span class="sc-label">Kalori/hari</span><span class="sc-val" id="dKalori">–</span></div>
       </div>
 
       <div class="charts-grid">
-        <div class="chart-card card">
-          <div class="chart-card-header">
+        <div class="chart-card util-card">
+          <div class="chart-head">
             <h3>Distribusi Makronutrisi</h3>
-            <span class="chart-badge">Per Hari</span>
+            <span class="chart-tag">Per Hari</span>
           </div>
-          <div class="chart-wrap">
-            <canvas id="macroChart"></canvas>
-          </div>
+          <div class="chart-area"><canvas id="macroChart"></canvas></div>
           <div class="chart-legend" id="macroLegend"></div>
         </div>
 
-        <div class="chart-card card">
-          <div class="chart-card-header">
+        <div class="chart-card util-card">
+          <div class="chart-head">
             <h3>Perbandingan Kalori</h3>
-            <span class="chart-badge">BMR vs TDEE vs Target</span>
+            <span class="chart-tag">BMR vs TDEE vs Target</span>
           </div>
-          <div class="chart-wrap">
-            <canvas id="calorieChart"></canvas>
-          </div>
+          <div class="chart-area"><canvas id="calorieChart"></canvas></div>
         </div>
 
-        <div class="chart-card card">
-          <div class="chart-card-header">
+        <div class="chart-card util-card">
+          <div class="chart-head">
             <h3>Indikator BMI</h3>
-            <span class="chart-badge">Body Mass Index</span>
+            <span class="chart-tag">Body Mass Index</span>
           </div>
-          <div class="chart-wrap">
-            <canvas id="bmiChart"></canvas>
-          </div>
-          <div class="bmi-gauge-label" id="bmiGaugeLabel"></div>
+          <div class="chart-area"><canvas id="bmiChart"></canvas></div>
+          <div class="bmi-gauge-lbl" id="bmiGaugeLabel"></div>
         </div>
 
-        <div class="chart-card card">
-          <div class="chart-card-header">
+        <div class="chart-card util-card">
+          <div class="chart-head">
             <h3>Progres Target Diet</h3>
-            <span class="chart-badge">Weekly Goal</span>
+            <span class="chart-tag">Simulasi Harian</span>
           </div>
-          <div class="progress-section" id="progressSection">
-            <div class="prog-item">
-              <div class="prog-header">
-                <span>Kalori Harian</span><span id="progKalLabel">–</span>
-              </div>
-              <div class="prog-track"><div class="prog-fill blue-fill" id="progKal"></div></div>
+          <div class="prog-section" id="progressSection">
+            <div class="prog-row">
+              <div class="prog-hd"><span>Kalori Harian</span><span id="progKalLabel">–</span></div>
+              <div class="prog-track"><div class="prog-fill fill-blue" id="progKal"></div></div>
             </div>
-            <div class="prog-item">
-              <div class="prog-header">
-                <span>Protein</span><span id="progProteinLabel">–</span>
-              </div>
-              <div class="prog-track"><div class="prog-fill green-fill" id="progProtein"></div></div>
+            <div class="prog-row">
+              <div class="prog-hd"><span>Protein</span><span id="progProteinLabel">–</span></div>
+              <div class="prog-track"><div class="prog-fill fill-green" id="progProtein"></div></div>
             </div>
-            <div class="prog-item">
-              <div class="prog-header">
-                <span>Karbohidrat</span><span id="progCarbsLabel">–</span>
-              </div>
-              <div class="prog-track"><div class="prog-fill orange-fill" id="progCarbs"></div></div>
+            <div class="prog-row">
+              <div class="prog-hd"><span>Karbohidrat</span><span id="progCarbsLabel">–</span></div>
+              <div class="prog-track"><div class="prog-fill fill-orange" id="progCarbs"></div></div>
             </div>
-            <div class="prog-item">
-              <div class="prog-header">
-                <span>Lemak</span><span id="progFatLabel">–</span>
-              </div>
-              <div class="prog-track"><div class="prog-fill purple-fill" id="progFat"></div></div>
+            <div class="prog-row">
+              <div class="prog-hd"><span>Lemak</span><span id="progFatLabel">–</span></div>
+              <div class="prog-track"><div class="prog-fill fill-purple" id="progFat"></div></div>
             </div>
-            <p class="prog-note">* Progress simulasi berdasarkan target kalori harian</p>
+            <p class="prog-note">* Simulasi berdasarkan target kalori harian</p>
           </div>
         </div>
       </div>
 
       <!-- muncul kalau belum ada data -->
       <div class="no-data" id="noData">
-        <div class="no-data-icon">📋</div>
+        <p class="no-data-icon">📋</p>
         <h3>Belum Ada Data</h3>
-        <p>Silakan isi kalkulator terlebih dahulu untuk melihat dashboard.</p>
-        <button class="btn btn-primary" onclick="showPage('calculator')">Mulai Hitung</button>
+        <p>Silakan isi kalkulator terlebih dahulu.</p>
+        <button class="btn-primary-pill" onclick="showPage('calculator')">Mulai Hitung</button>
       </div>
 
     </div>
   </section>
 
   <!-- footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="logo-icon">⚡</span> FitLogic
-      </div>
-      <p class="footer-copy">© 2025 FitLogic. Dibuat untuk edukasi – menggunakan rumus Mifflin-St Jeor.</p>
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <p class="footer-brand">FitLogic</p>
+      <p class="footer-copy">© 2025 FitLogic. Dibuat untuk edukasi — rumus Mifflin-St Jeor.</p>
     </div>
   </footer>
 
