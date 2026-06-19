@@ -154,9 +154,9 @@ img, canvas { display: block; max-width: 100%; }
 }
 .hero-hl {
   font-size: 56px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.07;
-  letter-spacing: -0.28px;
+  letter-spacing: -0.03em;
   color: var(--on-dark);
   margin-bottom: var(--sp-md);
 }
@@ -224,8 +224,9 @@ img, canvas { display: block; max-width: 100%; }
 
 .section-hl {
   font-size: 40px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.1;
+  letter-spacing: -0.025em;
   color: var(--ink);
   text-align: center;
   margin-bottom: var(--sp-md);
@@ -243,7 +244,10 @@ img, canvas { display: block; max-width: 100%; }
   gap: var(--sp-md);
 }
 .feat-icon {
-  font-size: 2rem;
+  width: 32px;
+  height: 32px;
+  stroke-width: 1.5px;
+  color: var(--blue);
   display: block;
   margin-bottom: var(--sp-sm);
 }
@@ -279,7 +283,7 @@ img, canvas { display: block; max-width: 100%; }
   background: var(--blue);
   color: #fff;
   font-size: 17px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.374px;
   line-height: 1;
   padding: 11px 22px;
@@ -298,7 +302,7 @@ img, canvas { display: block; max-width: 100%; }
   background: transparent;
   color: var(--blue-dark);
   font-size: 17px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.374px;
   padding: 11px 22px;
   border-radius: var(--r-pill);
@@ -318,7 +322,7 @@ img, canvas { display: block; max-width: 100%; }
   background: transparent;
   color: var(--blue);
   font-size: 17px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.374px;
   padding: 11px 22px;
   border-radius: var(--r-pill);
@@ -341,9 +345,9 @@ img, canvas { display: block; max-width: 100%; }
 .page-heading { text-align: center; margin-bottom: var(--sp-xxl); }
 .page-hl {
   font-size: 40px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.1;
-  letter-spacing: -0.374px;
+  letter-spacing: -0.025em;
   margin-bottom: var(--sp-xs);
 }
 .page-sub {
@@ -470,7 +474,18 @@ img, canvas { display: block; max-width: 100%; }
   border: 2px solid var(--blue-focus);
   background: rgba(0,102,204,0.04);
 }
-.goal-icon  { font-size: 1.5rem; }
+.goal-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.75px;
+  color: var(--ink-48);
+  margin-bottom: var(--sp-xs);
+  transition: color 0.18s, transform 0.18s;
+}
+.goal-chip input:checked + .goal-chip-inner .goal-icon {
+  color: var(--blue-focus);
+  transform: scale(1.05);
+}
 .goal-name  { font-size: 14px; font-weight: 600; letter-spacing: -0.224px; }
 .goal-sub   { font-size: 12px; color: var(--ink-48); letter-spacing: -0.12px; }
 .goal-delta { font-size: 12px; font-weight: 600; color: var(--blue); letter-spacing: -0.12px; margin-top: 2px; }
@@ -560,7 +575,14 @@ img, canvas { display: block; max-width: 100%; }
 }
 .stat-card-hl { border-color: var(--blue); border-width: 2px; }
 .stat-top { display: flex; gap: var(--sp-md); align-items: flex-start; }
-.stat-icon { font-size: 1.6rem; flex-shrink: 0; }
+.stat-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2px;
+  color: var(--blue);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
 .stat-body { display: flex; flex-direction: column; gap: 2px; }
 .stat-label {
   font-size: 11px;
@@ -600,7 +622,11 @@ img, canvas { display: block; max-width: 100%; }
   margin-bottom: 0;
 }
 .conclusion-icon {
-  font-size: 1.6rem;
+  width: 22px;
+  height: 22px;
+  stroke-width: 2px;
+  color: var(--blue);
+  flex-shrink: 0;
 }
 .conclusion-body {
   font-size: 15px;
@@ -705,7 +731,14 @@ img, canvas { display: block; max-width: 100%; }
   text-align: center;
 }
 .no-data.visible { display: flex; }
-.no-data-icon { font-size: 3rem; }
+.no-data-icon {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.25px;
+  color: var(--ink-48);
+  display: block;
+  margin: 0 auto var(--sp-sm);
+}
 .no-data h3 { font-size: 21px; font-weight: 600; }
 .no-data p  { font-size: 17px; color: var(--ink-48); }
 
@@ -723,6 +756,25 @@ img, canvas { display: block; max-width: 100%; }
   margin-bottom: var(--sp-xs);
 }
 .footer-copy { font-size: 12px; color: var(--ink-48); letter-spacing: -0.12px; }
+
+/* macro icons styling */
+.macro-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2px;
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-right: var(--sp-xs);
+  flex-shrink: 0;
+}
+.macro-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xs);
+}
+.macro-row:nth-child(1) .macro-icon { color: #34c759; }
+.macro-row:nth-child(2) .macro-icon { color: #ff9f0a; }
+.macro-row:nth-child(3) .macro-icon { color: #af52de; }
 
 /* ---- responsive ---- */
 @media (max-width: 900px) {

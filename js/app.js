@@ -25,6 +25,7 @@ function showPage(pageId) {
   document.getElementById('navLinks').classList.remove('open');
 
   if (pageId === 'dashboard') renderDashboard();
+  if (window.lucide) lucide.createIcons();
 }
 
 // toggle menu hamburger (mobile)
@@ -272,6 +273,7 @@ function populateResult(r) {
   }, 150);
 
   document.getElementById('conclusionText').innerHTML = generateConclusionText(r);
+  if (window.lucide) lucide.createIcons();
 }
 
 // render semua konten di halaman dashboard

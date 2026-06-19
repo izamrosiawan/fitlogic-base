@@ -69,22 +69,22 @@
         <p class="section-lead">Semua yang kamu butuhkan untuk memulai perjalanan diet yang terencana.</p>
         <div class="feat-grid">
           <div class="util-card">
-            <span class="feat-icon">📊</span>
+            <i data-lucide="bar-chart-3" class="feat-icon"></i>
             <h3>Kalkulasi Akurat</h3>
             <p>Menggunakan rumus Mifflin-St Jeor yang diakui secara ilmiah untuk hasil yang presisi.</p>
           </div>
           <div class="util-card">
-            <span class="feat-icon">🍎</span>
+            <i data-lucide="salad" class="feat-icon"></i>
             <h3>Makronutrisi</h3>
             <p>Pembagian protein, karbohidrat, dan lemak otomatis sesuai target dietmu.</p>
           </div>
           <div class="util-card">
-            <span class="feat-icon">🎯</span>
+            <i data-lucide="target" class="feat-icon"></i>
             <h3>Target Personal</h3>
-            <p>Pilih Cutting, Maintenance, atau Bulking sesuai tujuan dan kondisimu.</p>
+            <p>Pilih target penurunan, pemeliharaan, atau kenaikan berat badan sesuai tujuanmu.</p>
           </div>
           <div class="util-card">
-            <span class="feat-icon">📈</span>
+            <i data-lucide="activity" class="feat-icon"></i>
             <h3>Visualisasi Data</h3>
             <p>Grafik interaktif untuk memantau progres dan distribusi kalori harianmu.</p>
           </div>
@@ -165,7 +165,7 @@
               <label class="goal-chip" data-value="lose-fast">
                 <input type="radio" name="goal" value="lose-fast" id="goalLoseFast" />
                 <div class="goal-chip-inner">
-                  <span class="goal-icon">🔥</span>
+                  <i data-lucide="flame" class="goal-icon"></i>
                   <span class="goal-name">Lose Weight Fast</span>
                   <span class="goal-sub">Defisit ~500 kkal</span>
                 </div>
@@ -173,7 +173,7 @@
               <label class="goal-chip" data-value="lose-slow">
                 <input type="radio" name="goal" value="lose-slow" id="goalLoseSlow" />
                 <div class="goal-chip-inner">
-                  <span class="goal-icon">📉</span>
+                  <i data-lucide="trending-down" class="goal-icon"></i>
                   <span class="goal-name">Lose Weight Slow</span>
                   <span class="goal-sub">Defisit ~250 kkal</span>
                 </div>
@@ -181,7 +181,7 @@
               <label class="goal-chip" data-value="maintain">
                 <input type="radio" name="goal" value="maintain" id="goalMaintain" />
                 <div class="goal-chip-inner">
-                  <span class="goal-icon">⚖️</span>
+                  <i data-lucide="scale" class="goal-icon"></i>
                   <span class="goal-name">Maintain</span>
                   <span class="goal-sub">Kalori harian</span>
                 </div>
@@ -189,7 +189,7 @@
               <label class="goal-chip" data-value="gain-slow">
                 <input type="radio" name="goal" value="gain-slow" id="goalGainSlow" />
                 <div class="goal-chip-inner">
-                  <span class="goal-icon">📈</span>
+                  <i data-lucide="trending-up" class="goal-icon"></i>
                   <span class="goal-name">Gain Weight Slow</span>
                   <span class="goal-sub">Surplus ~250 kkal</span>
                 </div>
@@ -197,7 +197,7 @@
               <label class="goal-chip" data-value="gain-fast">
                 <input type="radio" name="goal" value="gain-fast" id="goalGainFast" />
                 <div class="goal-chip-inner">
-                  <span class="goal-icon">💪</span>
+                  <i data-lucide="dumbbell" class="goal-icon"></i>
                   <span class="goal-name">Gain Weight Fast</span>
                   <span class="goal-sub">Surplus ~500 kkal</span>
                 </div>
@@ -267,7 +267,7 @@
       <div class="result-grid">
         <div class="stat-card" id="rcBMI">
           <div class="stat-top">
-            <div class="stat-icon">📏</div>
+            <i data-lucide="ruler" class="stat-icon"></i>
             <div class="stat-body">
               <span class="stat-label">BMI</span>
               <span class="stat-val" id="valBMI">–</span>
@@ -281,7 +281,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-top">
-            <div class="stat-icon">🔥</div>
+            <i data-lucide="flame" class="stat-icon"></i>
             <div class="stat-body">
               <span class="stat-label">BMR</span>
               <span class="stat-val" id="valBMR">–</span>
@@ -292,7 +292,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-top">
-            <div class="stat-icon">⚡</div>
+            <i data-lucide="zap" class="stat-icon"></i>
             <div class="stat-body">
               <span class="stat-label">TDEE</span>
               <span class="stat-val" id="valTDEE">–</span>
@@ -303,7 +303,7 @@
         </div>
         <div class="stat-card stat-card-hl">
           <div class="stat-top">
-            <div class="stat-icon">🎯</div>
+            <i data-lucide="target" class="stat-icon"></i>
             <div class="stat-body">
               <span class="stat-label">Target Kalori</span>
               <span class="stat-val" id="valTarget">–</span>
@@ -317,7 +317,7 @@
       <!-- kesimpulan otomatis -->
       <div class="util-card conclusion-card" id="conclusionCard">
         <div class="conclusion-head">
-          <span class="conclusion-icon">💡</span>
+          <i data-lucide="sparkles" class="conclusion-icon"></i>
           <h2>Kesimpulan & Arahan Diet</h2>
         </div>
         <div class="conclusion-body" id="conclusionText">
@@ -331,15 +331,15 @@
         <p class="macro-sub">Rekomendasi berdasarkan target kalori harianmu</p>
         <div class="macro-bars">
           <div class="macro-row">
-            <div class="macro-hd"><span>🥩 Protein</span><span id="macroProtein">–</span></div>
+            <div class="macro-hd"><span class="macro-title-wrap"><i data-lucide="beef" class="macro-icon"></i> Protein</span><span id="macroProtein">–</span></div>
             <div class="macro-track"><div class="macro-fill fill-green" id="fillProtein"></div></div>
           </div>
           <div class="macro-row">
-            <div class="macro-hd"><span>🌾 Karbohidrat</span><span id="macroCarbs">–</span></div>
+            <div class="macro-hd"><span class="macro-title-wrap"><i data-lucide="wheat" class="macro-icon"></i> Karbohidrat</span><span id="macroCarbs">–</span></div>
             <div class="macro-track"><div class="macro-fill fill-orange" id="fillCarbs"></div></div>
           </div>
           <div class="macro-row">
-            <div class="macro-hd"><span>🥑 Lemak</span><span id="macroFat">–</span></div>
+            <div class="macro-hd"><span class="macro-title-wrap"><i data-lucide="droplet" class="macro-icon"></i> Lemak</span><span id="macroFat">–</span></div>
             <div class="macro-track"><div class="macro-fill fill-purple" id="fillFat"></div></div>
           </div>
         </div>
@@ -423,7 +423,7 @@
 
       <!-- muncul kalau belum ada data -->
       <div class="no-data" id="noData">
-        <p class="no-data-icon">📋</p>
+        <i data-lucide="clipboard-list" class="no-data-icon"></i>
         <h3>Belum Ada Data</h3>
         <p>Silakan isi kalkulator terlebih dahulu.</p>
         <button class="btn-primary-pill" onclick="showPage('calculator')">Mulai Hitung</button>
@@ -441,6 +441,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.446.0/dist/umd/lucide.min.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
