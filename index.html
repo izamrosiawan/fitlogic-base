@@ -21,6 +21,7 @@
         <li><a class="nav-link" data-page="calculator"  onclick="showPage('calculator')">Kalkulator</a></li>
         <li><a class="nav-link" data-page="result"      onclick="showPage('result')">Hasil</a></li>
         <li><a class="nav-link" data-page="dashboard"   onclick="showPage('dashboard')">Dashboard</a></li>
+        <li><a class="nav-link" data-page="glossary"    onclick="showPage('glossary')">Glosarium</a></li>
       </ul>
       <button class="gnav-ham" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -250,6 +251,9 @@
         <p class="page-sub" id="resultSubtitle">Berikut hasil kalkulasi berdasarkan data yang kamu masukkan.</p>
       </div>
 
+      <!-- spanduk peringatan kesehatan -->
+      <div class="health-alert-container" id="healthAlert" style="display: none;"></div>
+
       <!-- banner ringkasan: solid blue -->
       <div class="result-banner" id="resultHeroCard">
         <div class="rb-left">
@@ -314,14 +318,32 @@
         </div>
       </div>
 
-      <!-- kesimpulan otomatis -->
-      <div class="util-card conclusion-card" id="conclusionCard">
-        <div class="conclusion-head">
-          <i data-lucide="sparkles" class="conclusion-icon"></i>
-          <h2>Kesimpulan & Arahan Diet</h2>
+      <!-- kesimpulan & skor kesesuaian -->
+      <div class="result-middle-grid">
+        <div class="util-card conclusion-card" id="conclusionCard">
+          <div class="conclusion-head">
+            <i data-lucide="sparkles" class="conclusion-icon"></i>
+            <h2>Kesimpulan & Arahan Diet</h2>
+          </div>
+          <div class="conclusion-body" id="conclusionText">
+            <!-- diisi via JS -->
+          </div>
         </div>
-        <div class="conclusion-body" id="conclusionText">
-          <!-- diisi via JS -->
+
+        <div class="util-card match-card" id="matchScoreCard">
+          <div class="match-head">
+            <i data-lucide="heart" class="match-icon"></i>
+            <h2>Diet Match Score</h2>
+          </div>
+          <div class="match-body">
+            <div class="score-container">
+              <div class="score-circle" id="scoreCircle">
+                <span id="scoreText">--%</span>
+              </div>
+              <div class="score-label" id="scoreStatus">Mengevaluasi...</div>
+            </div>
+            <p class="score-desc" id="scoreReason">Mengukur tingkat kecocokan target diet dengan kondisi fisikmu.</p>
+          </div>
         </div>
       </div>
 
@@ -341,6 +363,47 @@
           <div class="macro-row">
             <div class="macro-hd"><span class="macro-title-wrap"><i data-lucide="droplet" class="macro-icon"></i> Lemak</span><span id="macroFat">–</span></div>
             <div class="macro-track"><div class="macro-fill fill-purple" id="fillFat"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- rekomendasi menu harian otomatis -->
+      <div class="util-card menu-card" id="menuCard" style="margin-bottom: var(--sp-lg);">
+        <div class="menu-head">
+          <i data-lucide="utensils" class="menu-title-icon"></i>
+          <div>
+            <h2>Rekomendasi Menu Harian Otomatis</h2>
+            <p class="menu-sub">Porsi gizi seimbang yang disesuaikan dengan kuota kalori targetmu.</p>
+          </div>
+        </div>
+        <div class="meal-grid">
+          <div class="meal-item">
+            <div class="meal-header">
+              <span class="meal-time">🍳 Sarapan (25%)</span>
+              <span class="meal-kcal" id="kcalSarapan">-- kcal</span>
+            </div>
+            <p class="meal-desc" id="menuSarapan">Memuat menu...</p>
+          </div>
+          <div class="meal-item">
+            <div class="meal-header">
+              <span class="meal-time">☀️ Makan Siang (35%)</span>
+              <span class="meal-kcal" id="kcalSiang">-- kcal</span>
+            </div>
+            <p class="meal-desc" id="menuSiang">Memuat menu...</p>
+          </div>
+          <div class="meal-item">
+            <div class="meal-header">
+              <span class="meal-time">🌙 Makan Malam (30%)</span>
+              <span class="meal-kcal" id="kcalMalam">-- kcal</span>
+            </div>
+            <p class="meal-desc" id="menuMalam">Memuat menu...</p>
+          </div>
+          <div class="meal-item">
+            <div class="meal-header">
+              <span class="meal-time">🍎 Camilan (10%)</span>
+              <span class="meal-kcal" id="kcalCamilan">-- kcal</span>
+            </div>
+            <p class="meal-desc" id="menuCamilan">Memuat menu...</p>
           </div>
         </div>
       </div>
@@ -421,6 +484,39 @@
         </div>
       </div>
 
+      <!-- riwayat progres diet -->
+      <div class="util-card history-card" id="historySection" style="margin-top: var(--sp-lg); display: none;">
+        <div class="history-head">
+          <div class="hh-left">
+            <i data-lucide="history" class="history-icon-title"></i>
+            <div>
+              <h2>Riwayat Progres Diet</h2>
+              <p class="history-sub">Catatan tren timbangan berat badan dan target kalori sebelumnya.</p>
+            </div>
+          </div>
+          <button class="btn-ghost-ink btn-sm" onclick="clearDietHistory()">Hapus Semua</button>
+        </div>
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Nama</th>
+                <th>Tinggi (cm)</th>
+                <th>Berat (kg)</th>
+                <th>BMI</th>
+                <th>Target Kalori</th>
+                <th>Goal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody">
+              <!-- diisi via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- muncul kalau belum ada data -->
       <div class="no-data" id="noData">
         <i data-lucide="clipboard-list" class="no-data-icon"></i>
@@ -429,6 +525,67 @@
         <button class="btn-primary-pill" onclick="showPage('calculator')">Mulai Hitung</button>
       </div>
 
+    </div>
+  </section>
+
+  <!-- halaman glosarium -->
+  <section class="page" id="page-glossary">
+    <div class="page-wrap">
+      <div class="page-heading">
+        <h1 class="page-hl">Glosarium Gizi</h1>
+        <p class="page-sub">Kamus istilah gizi dan diet lengkap untuk mempermudah perjalanan sehatmu.</p>
+      </div>
+      <div class="glossary-search-wrap">
+        <i data-lucide="search" class="search-icon"></i>
+        <input type="text" id="glossarySearch" placeholder="Cari istilah gizi (misal: BMI, BMR, Protein)..." autocomplete="off" />
+      </div>
+      <div class="glossary-grid" id="glossaryList">
+        <div class="util-card glossary-card" data-term="bmi body mass index indeks massa tubuh">
+          <h3>BMI (Body Mass Index)</h3>
+          <p class="term-full">Indeks Massa Tubuh</p>
+          <p>Metode pengukuran untuk menentukan kategori berat badan ideal (kurus, normal, berlebih, atau obesitas) dengan membandingkan berat badan (kg) terhadap kuadrat tinggi badan (m²).</p>
+        </div>
+        <div class="util-card glossary-card" data-term="bmr basal metabolic rate basal metabolisme">
+          <h3>BMR (Basal Metabolic Rate)</h3>
+          <p class="term-full">Basal Metabolic Rate</p>
+          <p>Jumlah energi (kalori) minimum yang dibutuhkan oleh tubuh dalam keadaan istirahat total untuk menjalankan fungsi organ-organ vital seperti jantung, paru-paru, dan sistem syaraf.</p>
+        </div>
+        <div class="util-card glossary-card" data-term="tdee total daily energy expenditure kebutuhan kalori harian">
+          <h3>TDEE (Total Daily Energy Expenditure)</h3>
+          <p class="term-full">Total Daily Energy Expenditure</p>
+          <p>Estimasi total kalori yang dibakar oleh tubuh dalam waktu 24 jam setelah memperhitungkan BMR dan tingkat aktivitas fisik sehari-hari (faktor aktivitas).</p>
+        </div>
+        <div class="util-card glossary-card" data-term="protein makronutrisi zat pembangun">
+          <h3>Protein</h3>
+          <p class="term-full">Zat Pembangun Makronutrisi</p>
+          <p>Nutrisi penting yang berfungsi membangun, memelihara, dan memperbaiki sel-sel tubuh yang rusak (termasuk jaringan otot). 1 gram protein menghasilkan 4 kkal energi.</p>
+        </div>
+        <div class="util-card glossary-card" data-term="karbohidrat karbo makronutrisi sumber energi">
+          <h3>Karbohidrat</h3>
+          <p class="term-full">Sumber Energi Utama</p>
+          <p>Penyedia energi utama bagi tubuh untuk aktivitas harian dan fungsi otak. Karbohidrat dibagi menjadi karbohidrat kompleks (roti gandum, nasi merah) dan karbohidrat sederhana (gula). 1 gram karbohidrat menghasilkan 4 kkal.</p>
+        </div>
+        <div class="util-card glossary-card" data-term="lemak lipid makronutrisi hormon penyerapan vitamin">
+          <h3>Lemak</h3>
+          <p class="term-full">Minyak & Lipid Makronutrisi</p>
+          <p>Zat gizi makro penting untuk menyerap vitamin larut lemak (A, D, E, K), memproduksi hormon, melindungi organ vital, dan menjadi cadangan energi. 1 gram lemak menghasilkan 9 kkal.</p>
+        </div>
+        <div class="util-card glossary-card" data-term="defisit kalori cutting calorie deficit">
+          <h3>Defisit Kalori</h3>
+          <p class="term-full">Calorie Deficit</p>
+          <p>Kondisi di mana jumlah kalori yang masuk (makanan/minuman) lebih sedikit daripada kalori yang dibakar tubuh (TDEE). Kondisi ini wajib dicapai untuk menurunkan berat badan.</p>
+        </div>
+        <div class="util-card glossary-card" data-term="surplus kalori bulking calorie surplus">
+          <h3>Surplus Kalori</h3>
+          <p class="term-full">Calorie Surplus</p>
+          <p>Kondisi di mana jumlah kalori yang masuk lebih banyak daripada kalori yang dibakar tubuh. Kondisi ini diperlukan untuk menambah berat badan atau membangun massa otot.</p>
+        </div>
+        <div class="util-card glossary-card" data-term="mifflin-st jeor rumus formula bmr">
+          <h3>Rumus Mifflin-St Jeor</h3>
+          <p class="term-full">Formula Estimasi BMR Medis</p>
+          <p>Formula matematika standar emas dunia medis yang digunakan untuk menghitung kebutuhan BMR seseorang berdasarkan berat badan, tinggi badan, usia, dan jenis kelamin.</p>
+        </div>
+      </div>
     </div>
   </section>
 

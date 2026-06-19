@@ -24,7 +24,10 @@ function showPage(pageId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   document.getElementById('navLinks').classList.remove('open');
 
-  if (pageId === 'dashboard') renderDashboard();
+  if (pageId === 'dashboard') {
+    renderDashboard();
+    renderHistory();
+  }
   if (window.lucide) lucide.createIcons();
 }
 
@@ -243,6 +246,121 @@ function generateConclusionText(r) {
   `;
 }
 
+// menghitung tingkat kecocokan diet (Diet Match Score) berdasarkan BMI dan target
+function calcMatchScore(bmi, goal) {
+  let score = 50;
+  let label = 'Sedang';
+  let color = '#ff9f0a';
+  let reason = '';
+
+  if (bmi < 18.5) {
+    if (goal === 'gain-slow' || goal === 'gain-fast') {
+      score = 95; label = 'Sangat Cocok'; color = '#34c759';
+      reason = 'Prioritas utama tubuh underweight adalah meningkatkan berat badan secara terkontrol untuk mencapai berat ideal sehat.';
+    } else if (goal === 'maintain') {
+      score = 70; label = 'Cukup Cocok'; color = '#ff9f0a';
+      reason = 'Menjaga kondisi tubuh underweight kurang optimal. Lebih baik fokus pada kenaikan secara bertahap.';
+    } else {
+      score = 25; label = 'Tidak Cocok'; color = '#ff3b30';
+      reason = 'Menurunkan berat badan saat berat badan Anda sudah di bawah normal sangat berbahaya bagi kesehatan dan stamina.';
+    }
+  } else if (bmi < 25) {
+    if (goal === 'maintain') {
+      score = 98; label = 'Sangat Cocok'; color = '#34c759';
+      reason = 'Mempertahankan berat badan normal adalah kondisi terbaik untuk stabilitas metabolisme tubuh.';
+    } else if (goal === 'lose-slow' || goal === 'gain-slow') {
+      score = 90; label = 'Sangat Cocok'; color = '#34c759';
+      reason = 'Kenaikan atau penurunan berat badan secara perlahan sangat aman bagi metabolisme tubuh Anda.';
+    } else {
+      score = 75; label = 'Cocok'; color = '#0071e3';
+      reason = 'Opsi yang cukup baik, namun target agresif sebaiknya ditunjang dengan latihan rutin dan pola makan teratur.';
+    }
+  } else if (bmi < 30) {
+    if (goal === 'lose-slow') {
+      score = 95; label = 'Sangat Cocok'; color = '#34c759';
+      reason = 'Menurunkan berat secara perlahan adalah cara terbaik membakar lemak tanpa mengorbankan otot.';
+    } else if (goal === 'lose-fast') {
+      score = 85; label = 'Cocok'; color = '#0071e3';
+      reason = 'Membantu defisit energi untuk memotong lemak, pastikan asupan protein Anda tercukupi.';
+    } else if (goal === 'maintain') {
+      score = 65; label = 'Cukup Cocok'; color = '#ff9f0a';
+      reason = 'Menstabilkan berat badan overweight kurang ideal untuk jangka panjang. Defisit kalori ringan lebih disarankan.';
+    } else {
+      score = 30; label = 'Tidak Cocok'; color = '#ff3b30';
+      reason = 'Menambah berat badan saat kondisi tubuh sudah overweight dapat meningkatkan risiko obesitas.';
+    }
+  } else {
+    if (goal === 'lose-slow') {
+      score = 98; label = 'Sangat Cocok'; color = '#34c759';
+      reason = 'Diet bertahap adalah pilihan paling sehat dan berkelanjutan untuk mereduksi risiko klinis obesitas.';
+    } else if (goal === 'lose-fast') {
+      score = 88; label = 'Sangat Cocok'; color = '#34c759';
+      reason = 'Tubuh dengan obesitas membutuhkan defisit energi, hindari metode diet ekstrem kelaparan.';
+    } else if (goal === 'maintain') {
+      score = 55; label = 'Cukup Cocok'; color = '#ff9f0a';
+      reason = 'Mempertahankan berat badan obesitas berisiko memicu kolesterol, hipertensi, dan diabetes.';
+    } else {
+      score = 15; label = 'Sangat Tidak Cocok'; color = '#ff3b30';
+      reason = 'Surplus kalori (penambahan berat) pada kondisi obesitas sangat membahayakan sistem kardiovaskular.';
+    }
+  }
+
+  return { score, label, color, reason };
+}
+
+// memeriksa risiko kesehatan diet (health alerts)
+function validateDietHealth(r) {
+  const alerts = [];
+
+  if (r.target < r.bmr) {
+    alerts.push({
+      type: 'warning',
+      title: 'Peringatan Metabolisme: Kalori di bawah BMR',
+      text: `Target kalori harianmu (<strong>${r.target.toLocaleString('id-ID')} kkal</strong>) berada di bawah nilai BMR-mu (<strong>${Math.round(r.bmr).toLocaleString('id-ID')} kkal</strong>). Makan di bawah BMR dalam jangka panjang berisiko menurunkan massa otot, merusak metabolisme (starvation mode), dan memicu kelelahan ekstrem.`
+    });
+  }
+
+  if (r.bmi < 18.5 && (r.goal === 'lose-fast' || r.goal === 'lose-slow')) {
+    alerts.push({
+      type: 'danger',
+      title: 'Risiko Medis: BMI Kurus & Defisit Kalori',
+      text: 'Indeks Massa Tubuhmu tergolong Kurus, namun kamu memilih program penurunan berat badan. Ini berisiko memicu malnutrisi, kelemahan sistem imun, gangguan hormonal, dan komplikasi medis serius.'
+    });
+  }
+
+  if (r.bmi >= 30 && (r.goal === 'gain-slow' || r.goal === 'gain-fast')) {
+    alerts.push({
+      type: 'danger',
+      title: 'Risiko Medis: BMI Obesitas & Surplus Kalori',
+      text: 'Indeks Massa Tubuhmu tergolong Obesitas, namun kamu memilih program kenaikan berat badan. Hal ini sangat tidak disarankan karena dapat meningkatkan penumpukan lemak organ (visceral) dan memperburuk metabolisme.'
+    });
+  }
+
+  return alerts;
+}
+
+// generate porsi dan menu harian berdasarkan kalori target
+function generateDailyMenu(targetCal) {
+  const breakfastKcal = Math.round(targetCal * 0.25);
+  const lunchKcal     = Math.round(targetCal * 0.35);
+  const dinnerKcal    = Math.round(targetCal * 0.30);
+  const snackKcal     = Math.round(targetCal * 0.10);
+  const mult          = targetCal / 2000;
+
+  const porsiNasiSiang = Math.round(150 * mult);
+  const porsiAyamSiang = Math.round(120 * mult);
+  const porsiNasiMalam = Math.round(120 * mult);
+  const porsiIkanMalam = Math.round(130 * mult);
+
+  return {
+    kcal: { breakfast: breakfastKcal, lunch: lunchKcal, dinner: dinnerKcal, snack: snackKcal },
+    breakfast: `Roti gandum bakar (2 lembar), 2 butir telur rebus/mata sapi (cukup minyak sedikit), dan ${Math.round(50 * mult)}g alpukat mentega segar.`,
+    lunch: `Nasi merah hangat (<strong>${porsiNasiSiang}g</strong>), dada ayam panggang tanpa kulit (<strong>${porsiAyamSiang}g</strong>), tumis brokoli/buncis dengan 1 sdt minyak zaitun.`,
+    dinner: `Sup bening gurame/patin (<strong>${porsiIkanMalam}g</strong>), tahu panggang/tempe bacem (2 potong sedang), nasi merah (<strong>${porsiNasiMalam}g</strong>), dan tumis kangkung.`,
+    snack: `Satu buah apel merah ukuran sedang atau segelas yogurt plain rendah lemak dengan taburan ${Math.round(10 * mult)}g chia seed.`
+  };
+}
+
 // isi halaman hasil dengan data kalkulasi
 function populateResult(r) {
   document.getElementById('rhcName').textContent     = r.nama;
@@ -273,6 +391,48 @@ function populateResult(r) {
   }, 150);
 
   document.getElementById('conclusionText').innerHTML = generateConclusionText(r);
+
+  // 1. Diet Match Score
+  const match = calcMatchScore(r.bmi, r.goal);
+  document.getElementById('scoreText').textContent = match.score + '%';
+  document.getElementById('scoreStatus').textContent = match.label;
+  document.getElementById('scoreStatus').style.color = match.color;
+  document.getElementById('scoreCircle').style.borderColor = match.color;
+  document.getElementById('scoreReason').textContent = match.reason;
+
+  // 2. Health Alerts Validasi Kesehatan
+  const alerts = validateDietHealth(r);
+  const alertContainer = document.getElementById('healthAlert');
+  if (alerts.length === 0) {
+    alertContainer.style.display = 'none';
+  } else {
+    alertContainer.style.display = 'flex';
+    alertContainer.innerHTML = alerts.map(a => `
+      <div class="health-alert">
+        <i data-lucide="${a.type === 'danger' ? 'alert-octagon' : 'alert-triangle'}" class="ha-icon"></i>
+        <div class="health-alert-content">
+          <span class="health-alert-title">${a.title}</span>
+          <span class="health-alert-desc">${a.text}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 3. Rekomendasi Menu Makanan
+  const menu = generateDailyMenu(r.target);
+  document.getElementById('kcalSarapan').textContent = menu.kcal.breakfast + ' kcal';
+  document.getElementById('kcalSiang').textContent    = menu.kcal.lunch + ' kcal';
+  document.getElementById('kcalMalam').textContent    = menu.kcal.dinner + ' kcal';
+  document.getElementById('kcalCamilan').textContent  = menu.kcal.snack + ' kcal';
+
+  document.getElementById('menuSarapan').innerHTML = menu.breakfast;
+  document.getElementById('menuSiang').innerHTML    = menu.lunch;
+  document.getElementById('menuMalam').innerHTML    = menu.dinner;
+  document.getElementById('menuCamilan').innerHTML  = menu.snack;
+
+  // 4. Simpan Riwayat
+  saveToHistory(r);
+
   if (window.lucide) lucide.createIcons();
 }
 
@@ -492,5 +652,133 @@ window.addEventListener('scroll', () => {
   nav.style.boxShadow = window.scrollY > 10 ? '0 2px 16px rgba(0,0,0,0.10)' : '';
 }, { passive: true });
 
+// simpan ke localStorage
+function saveToHistory(r) {
+  let history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
+
+  const isDuplicate = history.some(h =>
+    h.name === r.nama &&
+    Math.round(h.weight) === Math.round(r.berat) &&
+    Math.round(h.height) === Math.round(r.tinggi) &&
+    h.target === r.target &&
+    h.goal === r.goal
+  );
+  if (isDuplicate) return;
+
+  const record = {
+    date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+    name: r.nama,
+    age: r.umur,
+    gender: r.gender,
+    height: r.tinggi,
+    weight: r.berat,
+    activity: r.aktivFak,
+    goal: r.goal,
+    target: r.target,
+    bmi: r.bmi,
+    bmiCat: r.bmiCat.label,
+    goalLabel: goalLabel(r.goal)
+  };
+
+  history.unshift(record);
+  if (history.length > 10) history.pop();
+
+  localStorage.setItem('fitlogic_history', JSON.stringify(history));
+}
+
+// render tabel riwayat progres
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
+  const historySection = document.getElementById('historySection');
+  const tbody = document.getElementById('historyBody');
+
+  if (history.length === 0) {
+    historySection.style.display = 'none';
+    return;
+  }
+
+  historySection.style.display = 'block';
+  tbody.innerHTML = history.map((h, i) => `
+    <tr>
+      <td>${h.date}</td>
+      <td><strong>${h.name}</strong></td>
+      <td>${h.height} cm</td>
+      <td>${h.weight} kg</td>
+      <td class="history-bmi-cell"><span class="h-bmi-val">${h.bmi.toFixed(1)}</span> <br><span class="h-bmi-cat">${h.bmiCat}</span></td>
+      <td><strong>${h.target.toLocaleString('id-ID')} kkal</strong></td>
+      <td><span class="h-goal-badge">${h.goalLabel.split(' – ')[0]}</span></td>
+      <td>
+        <div class="h-actions">
+          <button class="h-btn-load" onclick="loadHistoryEntry(${i})" title="Terapkan kembali"><i data-lucide="play" class="h-icon-sm"></i></button>
+          <button class="h-btn-delete" onclick="deleteHistoryEntry(${i})" title="Hapus"><i data-lucide="trash-2" class="h-icon-sm"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+  if (window.lucide) lucide.createIcons();
+}
+
+window.loadHistoryEntry = function(index) {
+  const history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
+  const h = history[index];
+  if (!h) return;
+
+  document.getElementById('inputNama').value = h.name;
+  document.getElementById('inputUmur').value = h.age;
+
+  if (h.gender === 'male') {
+    document.getElementById('genderMale').checked = true;
+  } else if (h.gender === 'female') {
+    document.getElementById('genderFemale').checked = true;
+  }
+
+  document.getElementById('inputTinggi').value = h.height;
+  document.getElementById('inputBerat').value = h.weight;
+  document.getElementById('selectAktivitas').value = h.activity;
+
+  const goalRadio = document.querySelector(`input[name="goal"][value="${h.goal}"]`);
+  if (goalRadio) goalRadio.checked = true;
+
+  // Tampilkan tab kalkulator dulu
+  showPage('calculator');
+
+  // Trigger kalkulasi ulang secara otomatis
+  const form = document.getElementById('calcForm');
+  const event = new Event('submit', { cancelable: true });
+  form.dispatchEvent(event);
+};
+
+window.deleteHistoryEntry = function(index) {
+  let history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
+  history.splice(index, 1);
+  localStorage.setItem('fitlogic_history', JSON.stringify(history));
+  renderHistory();
+};
+
+window.clearDietHistory = function() {
+  if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat progres diet?')) {
+    localStorage.removeItem('fitlogic_history');
+    renderHistory();
+  }
+};
+
+// filter pencarian glosarium istilah gizi
+const glossarySearch = document.getElementById('glossarySearch');
+if (glossarySearch) {
+  glossarySearch.addEventListener('input', function(e) {
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('.glossary-card').forEach(card => {
+      const terms = card.dataset.term.toLowerCase();
+      const title = card.querySelector('h3').textContent.toLowerCase();
+      if (terms.includes(q) || title.includes(q)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+}
+
 // init
 showPage('home');
+renderHistory();
