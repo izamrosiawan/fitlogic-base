@@ -134,8 +134,10 @@ function getBMICategory(bmi) {
 }
 
 function calcTargetCalories(tdee, goal) {
-  if (goal === 'cutting') return Math.round(tdee - 500);
-  if (goal === 'bulking')  return Math.round(tdee + 500);
+  if (goal === 'lose-fast') return Math.round(tdee - 500);
+  if (goal === 'lose-slow') return Math.round(tdee - 250);
+  if (goal === 'gain-slow') return Math.round(tdee + 250);
+  if (goal === 'gain-fast') return Math.round(tdee + 500);
   return Math.round(tdee);
 }
 
@@ -143,9 +145,17 @@ function calcTargetCalories(tdee, goal) {
 // 1g protein/karbohidrat = 4 kcal, 1g lemak = 9 kcal
 function calcMacros(targetCal, goal) {
   let pPct, cPct, fPct;
-  if (goal === 'cutting')      { pPct = 0.40; cPct = 0.35; fPct = 0.25; }
-  else if (goal === 'bulking') { pPct = 0.30; cPct = 0.50; fPct = 0.20; }
-  else                         { pPct = 0.30; cPct = 0.45; fPct = 0.25; }
+  if (goal === 'lose-fast') {
+    pPct = 0.40; cPct = 0.35; fPct = 0.25;
+  } else if (goal === 'lose-slow') {
+    pPct = 0.35; cPct = 0.40; fPct = 0.25;
+  } else if (goal === 'gain-slow') {
+    pPct = 0.30; cPct = 0.50; fPct = 0.20;
+  } else if (goal === 'gain-fast') {
+    pPct = 0.25; cPct = 0.55; fPct = 0.20;
+  } else {
+    pPct = 0.30; cPct = 0.45; fPct = 0.25;
+  }
 
   return {
     proteinKcal: Math.round(targetCal * pPct),
@@ -160,9 +170,11 @@ function calcMacros(targetCal, goal) {
 
 function goalLabel(goal) {
   const map = {
-    cutting:     '🔥 Cutting – Turunkan Berat',
-    maintenance: '⚖️ Maintenance – Jaga Berat',
-    bulking:     '💪 Bulking – Tambah Massa'
+    'lose-fast': '🔥 Lose Weight Fast – Turun Cepat',
+    'lose-slow': '📉 Lose Weight Slow – Turun Perlahan',
+    'maintain':  '⚖️ Maintain – Jaga Berat',
+    'gain-slow': '📈 Gain Weight Slow – Naik Perlahan',
+    'gain-fast': '💪 Gain Weight Fast – Naik Cepat'
   };
   return map[goal] || goal;
 }
@@ -193,6 +205,43 @@ document.getElementById('calcForm').addEventListener('submit', function(e) {
   showPage('result');
 });
 
+// buat teks kesimpulan otomatis yang personal dan edukatif
+function generateConclusionText(r) {
+  const bmiVal = r.bmi.toFixed(1);
+  const bmiCatText = r.bmiCat.label;
+  const formattedTarget = r.target.toLocaleString('id-ID');
+  const proteinG = r.macros.proteinG;
+  const carbsG = r.macros.carbsG;
+  const fatG = r.macros.fatG;
+
+  let goalDesc = '';
+  let tips = '';
+
+  if (r.goal === 'lose-fast') {
+    goalDesc = 'menurunkan berat badan secara cepat dengan defisit kalori agresif (500 kkal)';
+    tips = 'Kurangi camilan manis, gorengan, dan minuman berkalori tinggi. Utamakan asupan protein tinggi dan penuhi kebutuhan cairan tubuh harianmu. Lakukan olahraga kardio minimal 3-4 kali seminggu serta sertakan latihan beban ringan untuk menjaga massa otot agar tidak banyak menyusut.';
+  } else if (r.goal === 'lose-slow') {
+    goalDesc = 'menurunkan berat badan secara perlahan dan sehat dengan defisit kalori moderat (250 kkal)';
+    tips = 'Metode penurunan berat badan perlahan ini sangat baik untuk menjaga massa otot dan metabolisme tubuh tetap aktif. Tetaplah aktif bergerak, catat progres berat badanmu secara rutin seminggu sekali di pagi hari setelah bangun tidur, dan lakukan workout minimal 3 kali seminggu.';
+  } else if (r.goal === 'maintain') {
+    goalDesc = 'menjaga berat badan saat ini (maintenance) dengan asupan kalori seimbang';
+    tips = 'Kuncinya adalah konsistensi porsi makan dan kualitas nutrisi harian. Tetap aktif secara fisik, misalnya dengan berjalan kaki minimal 10.000 langkah sehari dan lakukan latihan kekuatan secara teratur untuk memelihara kebugaran dan metabolisme tubuh.';
+  } else if (r.goal === 'gain-slow') {
+    goalDesc = 'meningkatkan berat badan atau menambah massa otot secara bertahap dengan surplus kalori moderat (250 kkal)';
+    tips = 'Pastikan surplus kalori bersih (clean bulking) didapatkan dari makanan padat nutrisi, bukan makanan olahan berlebih. Lakukan latihan beban terprogram 3-4 kali seminggu agar kalori tambahan diubah menjadi jaringan otot baru, bukan menumpuk sebagai lemak.';
+  } else if (r.goal === 'gain-fast') {
+    goalDesc = 'meningkatkan berat badan secara cepat dengan surplus kalori tinggi (500 kkal)';
+    tips = 'Penuhi asupan protein harianmu agar penambahan berat badan tidak dominan berupa lemak. Lakukan latihan kekuatan intensif 4-5 kali seminggu, pastikan waktu tidur cukup (7-8 jam) untuk pemulihan optimal, dan pantau kenaikan berat badan mingguan agar tetap teratur.';
+  }
+
+  return `
+    <p>Halo <strong>${r.nama}</strong>, berdasarkan analisis data fisikmu, kamu memiliki indeks massa tubuh (BMI) sebesar <strong>${bmiVal}</strong> yang tergolong dalam kategori <strong>${bmiCatText}</strong>.</p>
+    <p>Target kamu saat ini adalah <strong>${goalDesc}</strong>. Rekomendasi asupan kalori harian kamu adalah <strong>${formattedTarget} kkal</strong>.</p>
+    <p>Untuk pembagian gizi makronutrisi harian, disarankan mengonsumsi sekitar <strong>${proteinG}g Protein</strong> (pembangunan otot), <strong>${carbsG}g Karbohidrat</strong> (sumber energi utama), dan <strong>${fatG}g Lemak</strong> (menjaga metabolisme dan hormon).</p>
+    <p><strong>Arahan Aksi:</strong> ${tips}</p>
+  `;
+}
+
 // isi halaman hasil dengan data kalkulasi
 function populateResult(r) {
   document.getElementById('rhcName').textContent     = r.nama;
@@ -221,6 +270,8 @@ function populateResult(r) {
     document.getElementById('fillCarbs').style.width   = (m.cPct * 100) + '%';
     document.getElementById('fillFat').style.width     = (m.fPct * 100) + '%';
   }, 150);
+
+  document.getElementById('conclusionText').innerHTML = generateConclusionText(r);
 }
 
 // render semua konten di halaman dashboard
@@ -243,7 +294,14 @@ function renderDashboard() {
   const r = calcResult;
 
   document.getElementById('dNama').textContent   = r.nama;
-  document.getElementById('dGoal').textContent   = { cutting: 'Cutting', maintenance: 'Maintenance', bulking: 'Bulking' }[r.goal];
+  const dashGoalLabels = {
+    'lose-fast': 'Lose Weight Fast',
+    'lose-slow': 'Lose Weight Slow',
+    'maintain':  'Maintain',
+    'gain-slow': 'Gain Weight Slow',
+    'gain-fast': 'Gain Weight Fast'
+  };
+  document.getElementById('dGoal').textContent   = dashGoalLabels[r.goal] || r.goal;
   document.getElementById('dBMI').textContent    = r.bmi.toFixed(1) + ' – ' + r.bmiCat.label;
   document.getElementById('dKalori').textContent = r.target.toLocaleString('id-ID') + ' kcal';
 
@@ -313,9 +371,9 @@ function renderCalorieChart(r) {
         backgroundColor: [
           'rgba(0,113,227,0.75)',
           'rgba(52,199,89,0.75)',
-          r.goal === 'cutting' ? 'rgba(255,59,48,0.75)' :
-          r.goal === 'bulking' ? 'rgba(175,82,222,0.75)' :
-                                 'rgba(255,159,10,0.75)'
+          (r.goal === 'lose-fast' || r.goal === 'lose-slow') ? 'rgba(255,59,48,0.75)' :
+          (r.goal === 'gain-fast' || r.goal === 'gain-slow') ? 'rgba(175,82,222,0.75)' :
+                                                               'rgba(255,159,10,0.75)'
         ],
         borderRadius: 10,
         borderSkipped: false

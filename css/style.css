@@ -449,7 +449,7 @@ img, canvas { display: block; max-width: 100%; }
 }
 
 /* goal chips (configurator-option-chip style) */
-.goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-xs); }
+.goal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--sp-xs); }
 .goal-chip input[type="radio"] { display: none; }
 .goal-chip-inner {
   display: flex;
@@ -573,6 +573,50 @@ img, canvas { display: block; max-width: 100%; }
 .stat-note { font-size: 12px; color: var(--ink-48); }
 .stat-bar-wrap { height: 4px; background: var(--parchment); border-radius: 2px; overflow: hidden; }
 .stat-bar-inner { height: 100%; border-radius: 2px; transition: width 1s ease; }
+.stat-desc {
+  font-size: 12px;
+  color: var(--ink-48);
+  line-height: 1.4;
+  margin-top: auto;
+  border-top: 1px solid var(--divider);
+  padding-top: var(--sp-sm);
+}
+
+/* conclusion card */
+.conclusion-card {
+  border-left: 4px solid var(--blue);
+  margin-bottom: var(--sp-lg);
+}
+.conclusion-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  margin-bottom: var(--sp-sm);
+}
+.conclusion-head h2 {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.231px;
+  margin-bottom: 0;
+}
+.conclusion-icon {
+  font-size: 1.6rem;
+}
+.conclusion-body {
+  font-size: 15px;
+  color: var(--ink-80);
+  line-height: 1.6;
+}
+.conclusion-body p {
+  margin-bottom: var(--sp-sm);
+}
+.conclusion-body p:last-child {
+  margin-bottom: 0;
+}
+.conclusion-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
 
 /* macro section */
 .macro-card { margin-bottom: var(--sp-lg); }

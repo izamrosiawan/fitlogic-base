@@ -162,31 +162,44 @@
           <div class="form-group" id="fg-goal">
             <label class="form-label">Target Diet</label>
             <div class="goal-grid">
-              <label class="goal-chip" data-value="cutting">
-                <input type="radio" name="goal" value="cutting" id="goalCutting" />
+              <label class="goal-chip" data-value="lose-fast">
+                <input type="radio" name="goal" value="lose-fast" id="goalLoseFast" />
                 <div class="goal-chip-inner">
                   <span class="goal-icon">🔥</span>
-                  <span class="goal-name">Cutting</span>
-                  <span class="goal-sub">Turunkan berat</span>
-                  <span class="goal-delta">–500 kcal</span>
+                  <span class="goal-name">Lose Weight Fast</span>
+                  <span class="goal-sub">Defisit ~500 kkal</span>
                 </div>
               </label>
-              <label class="goal-chip" data-value="maintenance">
-                <input type="radio" name="goal" value="maintenance" id="goalMaintenance" />
+              <label class="goal-chip" data-value="lose-slow">
+                <input type="radio" name="goal" value="lose-slow" id="goalLoseSlow" />
+                <div class="goal-chip-inner">
+                  <span class="goal-icon">📉</span>
+                  <span class="goal-name">Lose Weight Slow</span>
+                  <span class="goal-sub">Defisit ~250 kkal</span>
+                </div>
+              </label>
+              <label class="goal-chip" data-value="maintain">
+                <input type="radio" name="goal" value="maintain" id="goalMaintain" />
                 <div class="goal-chip-inner">
                   <span class="goal-icon">⚖️</span>
-                  <span class="goal-name">Maintenance</span>
-                  <span class="goal-sub">Jaga berat</span>
-                  <span class="goal-delta">±0 kcal</span>
+                  <span class="goal-name">Maintain</span>
+                  <span class="goal-sub">Kalori harian</span>
                 </div>
               </label>
-              <label class="goal-chip" data-value="bulking">
-                <input type="radio" name="goal" value="bulking" id="goalBulking" />
+              <label class="goal-chip" data-value="gain-slow">
+                <input type="radio" name="goal" value="gain-slow" id="goalGainSlow" />
+                <div class="goal-chip-inner">
+                  <span class="goal-icon">📈</span>
+                  <span class="goal-name">Gain Weight Slow</span>
+                  <span class="goal-sub">Surplus ~250 kkal</span>
+                </div>
+              </label>
+              <label class="goal-chip" data-value="gain-fast">
+                <input type="radio" name="goal" value="gain-fast" id="goalGainFast" />
                 <div class="goal-chip-inner">
                   <span class="goal-icon">💪</span>
-                  <span class="goal-name">Bulking</span>
-                  <span class="goal-sub">Tambah massa</span>
-                  <span class="goal-delta">+500 kcal</span>
+                  <span class="goal-name">Gain Weight Fast</span>
+                  <span class="goal-sub">Surplus ~500 kkal</span>
                 </div>
               </label>
             </div>
@@ -264,6 +277,7 @@
           <div class="stat-bar-wrap">
             <div class="stat-bar-inner" id="progBMI"></div>
           </div>
+          <p class="stat-desc">Indeks Massa Tubuh untuk mengukur kategori berat badan ideal.</p>
         </div>
         <div class="stat-card">
           <div class="stat-top">
@@ -274,6 +288,7 @@
               <span class="stat-note">kcal/hari (istirahat)</span>
             </div>
           </div>
+          <p class="stat-desc">Kalori dasar yang dibutuhkan tubuh saat istirahat total.</p>
         </div>
         <div class="stat-card">
           <div class="stat-top">
@@ -284,6 +299,7 @@
               <span class="stat-note">kcal/hari (aktif)</span>
             </div>
           </div>
+          <p class="stat-desc">Kebutuhan kalori harian total setelah menghitung aktivitas fisikmu.</p>
         </div>
         <div class="stat-card stat-card-hl">
           <div class="stat-top">
@@ -294,6 +310,18 @@
               <span class="stat-note">kcal/hari</span>
             </div>
           </div>
+          <p class="stat-desc">Jumlah kalori harian yang disarankan untuk mencapai target berat badanmu.</p>
+        </div>
+      </div>
+
+      <!-- kesimpulan otomatis -->
+      <div class="util-card conclusion-card" id="conclusionCard">
+        <div class="conclusion-head">
+          <span class="conclusion-icon">💡</span>
+          <h2>Kesimpulan & Arahan Diet</h2>
+        </div>
+        <div class="conclusion-body" id="conclusionText">
+          <!-- diisi via JS -->
         </div>
       </div>
 
