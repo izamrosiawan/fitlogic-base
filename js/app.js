@@ -466,6 +466,26 @@ function populateResult(r) {
   if (window.lucide) lucide.createIcons();
 }
 
+// Simpan riwayat kalkulasi terakhir ke localStorage
+function saveToHistory(r) {
+  const history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
+  const entry = {
+    name: r.nama,
+    age: r.umur,
+    gender: r.gender,
+    height: r.tinggi,
+    weight: r.berat,
+    activity: r.aktivFak,
+    goal: r.goal,
+    target: r.target,
+    bmi: r.bmi,
+    date: new Date().toISOString()
+  };
+  history.unshift(entry);
+  if (history.length > 10) history.pop();
+  localStorage.setItem('fitlogic_history', JSON.stringify(history));
+}
+
 // render semua konten di halaman dashboard
 function renderDashboard() {
   const noData     = document.getElementById('noData');
