@@ -30,7 +30,7 @@ function showPage(pageId) {
     link.classList.toggle('active', link.dataset.page === pageId);
   });
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo(0, 0);
   document.getElementById('navLinks').classList.remove('open');
 
   if (pageId === 'dashboard') {
