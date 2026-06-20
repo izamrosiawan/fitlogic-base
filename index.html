@@ -12,7 +12,7 @@
 </head>
 <body>
 
-  <!-- black global nav, 44px -->
+  <!-- premium light global nav, 60px -->
   <nav class="gnav" id="navbar">
     <div class="gnav-wrap">
       <a class="gnav-brand" onclick="showPage('home')">FitLogic</a>
@@ -563,6 +563,10 @@
               <div class="prog-track"><div class="prog-fill fill-orange" id="progKal"></div></div>
             </div>
             <div class="prog-row">
+              <div class="prog-hd"><span>Aktivitas Olahraga (Terbakar)</span><span id="progBurnedLabel">–</span></div>
+              <div class="prog-track"><div class="prog-fill fill-blue" id="progBurned"></div></div>
+            </div>
+            <div class="prog-row">
               <div class="prog-hd"><span>Protein</span><span id="progProteinLabel">–</span></div>
               <div class="prog-track"><div class="prog-fill fill-green" id="progProtein"></div></div>
             </div>
@@ -654,6 +658,13 @@
         <input type="text" id="glossarySearch" placeholder="Cari istilah gizi (misal: BMI, BMR, Protein)..." autocomplete="off" />
       </div>
       <div class="glossary-grid" id="glossaryList">
+        <!-- Glossary Empty Search State -->
+        <div id="glossaryEmptyState" style="display: none; grid-column: 1 / -1; text-align: center; padding: var(--sp-lg) var(--sp-sm); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);">
+          <i data-lucide="search" style="width: 40px; height: 40px; margin: 0 auto var(--sp-xs); color: var(--secondary); display: block;"></i>
+          <p style="font-weight: 700; color: var(--neutral); margin-bottom: 4px; font-family: var(--font-display);">Istilah Tidak Ditemukan</p>
+          <p style="font-size: 13px; color: var(--on-surface-muted);">Coba gunakan kata kunci lain seperti BMI, BMR, Kalori, atau Protein.</p>
+        </div>
+
         <div class="util-card glossary-card" data-term="bmi body mass index indeks massa tubuh">
           <h3>BMI (Body Mass Index)</h3>
           <p class="term-full">Indeks Massa Tubuh</p>

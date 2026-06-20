@@ -730,6 +730,15 @@ function saveDailyLog(log) {
   localStorage.setItem('fitlogic_daily_log', JSON.stringify(log));
 }
 
+// Hitung target kalori olahraga harian berdasarkan tingkat aktivitas
+function getActiveBurnTarget(factor) {
+  if (factor <= 1.2) return 150;    // Sedentary (Tidak aktif)
+  if (factor <= 1.375) return 250;  // Ringan
+  if (factor <= 1.55) return 400;   // Sedang
+  if (factor <= 1.725) return 600;  // Aktif
+  return 800;                       // Sangat Aktif
+}
+
 // progress bar simulasi konsumsi harian
 function renderProgressBars(r) {
   const m = r.macros;
@@ -739,7 +748,11 @@ function renderProgressBars(r) {
   const netCalories = Math.max(0, currentLog.calories - currentLog.burned);
   const remaining = r.target - currentLog.calories + currentLog.burned;
 
+  // Hitung target kalori olahraga
+  const burnTarget = getActiveBurnTarget(r.aktivFak);
+
   const calPct = r.target > 0 ? Math.min(Math.round((netCalories / r.target) * 100), 100) : 0;
+  const burnPct = burnTarget > 0 ? Math.min(Math.round((currentLog.burned / burnTarget) * 100), 100) : 0;
   const proteinPct = m.proteinG > 0 ? Math.min(Math.round((currentLog.protein / m.proteinG) * 100), 100) : 0;
   const carbsPct = m.carbsG > 0 ? Math.min(Math.round((currentLog.carbs / m.carbsG) * 100), 100) : 0;
   const fatPct = m.fatG > 0 ? Math.min(Math.round((currentLog.fat / m.fatG) * 100), 100) : 0;
@@ -759,12 +772,14 @@ function renderProgressBars(r) {
 
   // Update Label Progres
   document.getElementById('progKalLabel').textContent     = `${netCalories.toLocaleString('id-ID')} / ${r.target.toLocaleString('id-ID')} kcal (${calPct}%)`;
+  document.getElementById('progBurnedLabel').textContent  = `${currentLog.burned.toLocaleString('id-ID')} / ${burnTarget} kcal (${burnPct}%)`;
   document.getElementById('progProteinLabel').textContent = `${currentLog.protein}g / ${m.proteinG}g (${proteinPct}%)`;
   document.getElementById('progCarbsLabel').textContent   = `${currentLog.carbs}g / ${m.carbsG}g (${carbsPct}%)`;
   document.getElementById('progFatLabel').textContent     = `${currentLog.fat}g / ${m.fatG}g (${fatPct}%)`;
 
   setTimeout(() => {
     document.getElementById('progKal').style.width     = calPct + '%';
+    document.getElementById('progBurned').style.width  = burnPct + '%';
     document.getElementById('progProtein').style.width = proteinPct + '%';
     document.getElementById('progCarbs').style.width   = carbsPct + '%';
     document.getElementById('progFat').style.width     = fatPct + '%';
@@ -910,15 +925,22 @@ const glossarySearch = document.getElementById('glossarySearch');
 if (glossarySearch) {
   glossarySearch.addEventListener('input', function(e) {
     const q = e.target.value.toLowerCase().trim();
+    let visibleCount = 0;
     document.querySelectorAll('.glossary-card').forEach(card => {
       const terms = card.dataset.term.toLowerCase();
       const title = card.querySelector('h3').textContent.toLowerCase();
       if (terms.includes(q) || title.includes(q)) {
         card.style.display = 'flex';
+        visibleCount++;
       } else {
         card.style.display = 'none';
       }
     });
+
+    const emptyState = document.getElementById('glossaryEmptyState');
+    if (emptyState) {
+      emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
   });
 }
 
