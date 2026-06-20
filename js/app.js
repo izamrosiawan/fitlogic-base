@@ -15,7 +15,8 @@ let calcResult = null;
 let chartInstances = {
   macro: null,
   calorie: null,
-  bmi: null
+  bmi: null,
+  weight: null
 };
 
 // navigasi antar halaman
@@ -234,6 +235,7 @@ document.getElementById('calcForm').addEventListener('submit', function(e) {
   calcResult = { nama, umur, gender, tinggi, berat, aktivFak, goal, bmi, bmr, tdee, target, macros, bmiCat };
 
   populateResult(calcResult);
+  seedInitialWeight(calcResult);
   showPage('result');
 });
 
@@ -498,6 +500,7 @@ function renderDashboard() {
   renderMacroChart(r);
   renderCalorieChart(r);
   renderBMIChart(r);
+  renderWeightChart();
   renderProgressBars(r);
 }
 
@@ -639,6 +642,69 @@ function renderBMIChart(r) {
     `BMI kamu: <strong style="color:${r.bmiCat.color}">${r.bmi.toFixed(1)}</strong> – ${r.bmiCat.label}`;
 }
 
+// Line chart untuk tren perkembangan berat badan dari riwayat log berat badan
+function renderWeightChart() {
+  const logs = JSON.parse(localStorage.getItem('fitlogic_weight_logs')) || [];
+  const card = document.getElementById('weightTrendCard');
+  
+  if (logs.length < 2) {
+    if (card) card.style.display = 'none';
+    return;
+  }
+  
+  if (card) card.style.display = 'block';
+  
+  const ctx = document.getElementById('weightChart').getContext('2d');
+  if (chartInstances.weight) chartInstances.weight.destroy();
+
+  // Urutkan data logs secara kronologis dari terlama ke terbaru untuk grafik garis
+  const dataPoints = [...logs].sort((a, b) => new Date(a.date) - new Date(b.date)).slice(-7);
+  const labels = dataPoints.map(l => new Date(l.date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }));
+  const weights = dataPoints.map(l => l.weight);
+
+  chartInstances.weight = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Berat Badan (kg)',
+        data: weights,
+        borderColor: '#FC5200',
+        backgroundColor: 'rgba(252, 82, 0, 0.08)',
+        borderWidth: 3,
+        tension: 0.3,
+        pointBackgroundColor: '#FC5200',
+        pointHoverBackgroundColor: '#121212',
+        pointRadius: 4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.raw} kg`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          grid: { color: 'rgba(18, 18, 18, 0.05)' },
+          ticks: { font: { family: "'Outfit', sans-serif" } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "'Outfit', sans-serif" } }
+        }
+      }
+    }
+  });
+}
+
 // Ambil data log konsumsi harian
 function getDailyLog() {
   const defaultLog = { calories: 0, protein: 0, carbs: 0, fat: 0, burned: 0, workouts: [] };
@@ -752,113 +818,90 @@ window.addEventListener('scroll', () => {
   nav.style.boxShadow = window.scrollY > 10 ? '0 2px 16px rgba(0,0,0,0.10)' : '';
 }, { passive: true });
 
-// simpan ke localStorage
-function saveToHistory(r) {
-  let history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
-
-  const isDuplicate = history.some(h =>
-    h.name === r.nama &&
-    Math.round(h.weight) === Math.round(r.berat) &&
-    Math.round(h.height) === Math.round(r.tinggi) &&
-    h.target === r.target &&
-    h.goal === r.goal
-  );
-  if (isDuplicate) return;
-
-  const record = {
-    date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-    name: r.nama,
-    age: r.umur,
-    gender: r.gender,
-    height: r.tinggi,
-    weight: r.berat,
-    activity: r.aktivFak,
-    goal: r.goal,
-    target: r.target,
-    bmi: r.bmi,
-    bmiCat: r.bmiCat.label,
-    goalLabel: goalLabel(r.goal)
-  };
-
-  history.unshift(record);
-  if (history.length > 10) history.pop();
-
-  localStorage.setItem('fitlogic_history', JSON.stringify(history));
+// Inisialisasi entri berat badan pertama kali dari kalkulator jika kosong
+function seedInitialWeight(r) {
+  let logs = JSON.parse(localStorage.getItem('fitlogic_weight_logs')) || [];
+  if (logs.length === 0) {
+    const todayISO = new Date().toISOString().split('T')[0];
+    const newLog = {
+      date: todayISO,
+      weight: r.berat,
+      bmi: r.bmi,
+      bmiCat: r.bmiCat.label
+    };
+    logs.push(newLog);
+    localStorage.setItem('fitlogic_weight_logs', JSON.stringify(logs));
+  }
 }
 
-// render tabel riwayat progres
+// render tabel riwayat progres jurnal berat badan
 function renderHistory() {
-  const history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
-  const historySection = document.getElementById('historySection');
+  const logs = JSON.parse(localStorage.getItem('fitlogic_weight_logs')) || [];
   const tbody = document.getElementById('historyBody');
 
-  if (history.length === 0) {
-    historySection.style.display = 'none';
+  // Urutkan logs secara kronologis terbalik (terbaru di atas) untuk ditampilkan di tabel
+  const displayLogs = [...logs].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  if (displayLogs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--on-surface-muted); padding: 24px;">Belum ada catatan berat badan. Masukkan di atas atau isi kalkulator terlebih dahulu.</td></tr>`;
     return;
   }
 
-  historySection.style.display = 'block';
-  tbody.innerHTML = history.map((h, i) => `
-    <tr>
-      <td>${h.date}</td>
-      <td><strong>${h.name}</strong></td>
-      <td>${h.height} cm</td>
-      <td>${h.weight} kg</td>
-      <td class="history-bmi-cell"><span class="h-bmi-val">${h.bmi.toFixed(1)}</span> <br><span class="h-bmi-cat">${h.bmiCat}</span></td>
-      <td><strong>${h.target.toLocaleString('id-ID')} kkal</strong></td>
-      <td><span class="h-goal-badge">${h.goalLabel.split(' – ')[0]}</span></td>
-      <td>
-        <div class="h-actions">
-          <button class="h-btn-load" onclick="loadHistoryEntry(${i})" title="Terapkan kembali"><i data-lucide="play" class="h-icon-sm"></i></button>
-          <button class="h-btn-delete" onclick="deleteHistoryEntry(${i})" title="Hapus"><i data-lucide="trash-2" class="h-icon-sm"></i></button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = displayLogs.map((log) => {
+    // Cari log sebelum entri ini secara kronologis untuk menghitung perubahan
+    const chronologicalLogs = [...logs].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const currentChronologicalIdx = chronologicalLogs.findIndex(l => l.date === log.date && l.weight === log.weight);
+    
+    let changeText = '–';
+    let changeStyle = 'color: var(--on-surface-muted);';
+
+    if (currentChronologicalIdx > 0) {
+      const prevLog = chronologicalLogs[currentChronologicalIdx - 1];
+      const diff = log.weight - prevLog.weight;
+      if (diff < 0) {
+        changeText = `${diff.toFixed(1)} kg`;
+        changeStyle = 'color: #248a3d; font-weight: 600;'; // Turun berat badan (hijau)
+      } else if (diff > 0) {
+        changeText = `+${diff.toFixed(1)} kg`;
+        changeStyle = 'color: var(--primary); font-weight: 600;'; // Naik berat badan (orange)
+      } else {
+        changeText = '0.0 kg';
+        changeStyle = 'color: var(--secondary);';
+      }
+    }
+
+    const dateFormatted = new Date(log.date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    return `
+      <tr>
+        <td><strong>${dateFormatted}</strong></td>
+        <td><strong>${log.weight} kg</strong></td>
+        <td><span style="${changeStyle}">${changeText}</span></td>
+        <td class="h-bmi-val">${log.bmi.toFixed(1)}</td>
+        <td><span class="bmi-chip ${log.bmi < 18.5 ? 'chip-blue' : log.bmi < 25 ? 'chip-green' : log.bmi < 30 ? 'chip-orange' : 'chip-red'}">${log.bmiCat}</span></td>
+        <td>
+          <button class="h-btn-delete" onclick="deleteWeightLog('${log.date}')" title="Hapus Log"><i data-lucide="trash-2" class="h-icon-sm"></i></button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+  
   if (window.lucide) lucide.createIcons();
 }
 
-window.loadHistoryEntry = function(index) {
-  const history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
-  const h = history[index];
-  if (!h) return;
-
-  document.getElementById('inputNama').value = h.name;
-  document.getElementById('inputUmur').value = h.age;
-
-  if (h.gender === 'male') {
-    document.getElementById('genderMale').checked = true;
-  } else if (h.gender === 'female') {
-    document.getElementById('genderFemale').checked = true;
-  }
-
-  document.getElementById('inputTinggi').value = h.height;
-  document.getElementById('inputBerat').value = h.weight;
-  document.getElementById('selectAktivitas').value = h.activity;
-
-  const goalRadio = document.querySelector(`input[name="goal"][value="${h.goal}"]`);
-  if (goalRadio) goalRadio.checked = true;
-
-  // Tampilkan tab kalkulator dulu
-  showPage('calculator');
-
-  // Trigger kalkulasi ulang secara otomatis
-  const form = document.getElementById('calcForm');
-  const event = new Event('submit', { cancelable: true });
-  form.dispatchEvent(event);
-};
-
-window.deleteHistoryEntry = function(index) {
-  let history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
-  history.splice(index, 1);
-  localStorage.setItem('fitlogic_history', JSON.stringify(history));
+window.deleteWeightLog = function(dateStr) {
+  let logs = JSON.parse(localStorage.getItem('fitlogic_weight_logs')) || [];
+  logs = logs.filter(l => l.date !== dateStr);
+  localStorage.setItem('fitlogic_weight_logs', JSON.stringify(logs));
   renderHistory();
+  renderWeightChart();
 };
 
 window.clearDietHistory = function() {
-  if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat progres diet?')) {
-    localStorage.removeItem('fitlogic_history');
+  if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat jurnal berat badan?')) {
+    localStorage.removeItem('fitlogic_weight_logs');
     renderHistory();
+    renderWeightChart();
   }
 };
 
@@ -986,8 +1029,47 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+  // Weight Log Form submit (Jurnal Progres Berat Badan)
+  const weightLogForm = document.getElementById('weightLogForm');
+  if (weightLogForm) {
+    const logWeightDate = document.getElementById('logWeightDate');
+    if (logWeightDate) {
+      logWeightDate.value = new Date().toISOString().split('T')[0];
+    }
+
+    weightLogForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const weight = parseFloat(document.getElementById('logWeightInput').value);
+      const date = document.getElementById('logWeightDate').value;
+      if (!weight || !date) return;
+
+      // Ambil tinggi badan aktif untuk menghitung BMI
+      let activeHeight = 170;
+      if (calcResult && calcResult.tinggi) {
+        activeHeight = calcResult.tinggi;
+      }
+
+      const bmi = weight / ((activeHeight / 100) * (activeHeight / 100));
+      const bmiCat = getBMICategory(bmi).label;
+
+      let logs = JSON.parse(localStorage.getItem('fitlogic_weight_logs')) || [];
+      
+      // Ganti entri lama jika tanggalnya persis sama untuk menghindari duplikat
+      logs = logs.filter(l => l.date !== date);
+      
+      logs.push({ date, weight, bmi, bmiCat });
+      localStorage.setItem('fitlogic_weight_logs', JSON.stringify(logs));
+      
+      weightLogForm.reset();
+      if (logWeightDate) {
+        logWeightDate.value = new Date().toISOString().split('T')[0];
+      }
+
+      renderHistory();
+      renderWeightChart();
+    });
+  }
 });
 
 // init
 showPage('home');
-renderHistory();

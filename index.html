@@ -435,6 +435,15 @@
       </div>
 
       <div class="charts-grid">
+        <!-- Weight Trend Card (Hidden if entries < 2) -->
+        <div class="chart-card util-card" id="weightTrendCard" style="display: none;">
+          <div class="chart-head">
+             <h3>Tren Berat Badan</h3>
+            <span class="chart-tag">Progres</span>
+          </div>
+          <div class="chart-area"><canvas id="weightChart"></canvas></div>
+        </div>
+
         <div class="chart-card util-card">
           <div class="chart-head">
             <h3>Distribusi Makronutrisi</h3>
@@ -577,29 +586,41 @@
         </div>
       </div>
 
-      <!-- riwayat progres diet -->
-      <div class="util-card history-card" id="historySection" style="margin-top: var(--sp-lg); display: none;">
+      <!-- jurnal progres berat badan (Weight Log & Progress Journal) -->
+      <div class="util-card history-card" id="historySection" style="margin-top: var(--sp-lg);">
         <div class="history-head">
           <div class="hh-left">
-            <i data-lucide="history" class="history-icon-title"></i>
+            <i data-lucide="trending-up" class="history-icon-title"></i>
             <div>
-              <h2>Riwayat Progres Diet</h2>
-              <p class="history-sub">Catatan tren timbangan berat badan dan target kalori sebelumnya.</p>
+              <h2>Jurnal Progres Berat Badan</h2>
+              <p class="history-sub">Catat berat badan harianmu untuk melihat grafik progres dan tren diet.</p>
             </div>
           </div>
-          <button class="btn-ghost-ink btn-sm" onclick="clearDietHistory()">Hapus Semua</button>
+          <button type="button" class="btn-ghost-ink btn-sm" onclick="clearDietHistory()">Hapus Semua</button>
         </div>
+
+        <!-- Inline Weight Logger Form -->
+        <form id="weightLogForm" style="display: flex; gap: var(--sp-sm); align-items: flex-end; flex-wrap: wrap; background: var(--background); padding: var(--sp-sm); border: 1px solid var(--border); border-radius: var(--r-md); margin-bottom: var(--sp-sm);">
+          <div class="form-group" style="flex: 1; min-width: 120px; gap: 4px;">
+            <label for="logWeightInput" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Berat Badan (kg)</label>
+            <input type="number" id="logWeightInput" class="form-input" style="padding: 8px 12px; font-size: 14px;" placeholder="68.5" step="0.1" min="1" required />
+          </div>
+          <div class="form-group" style="flex: 1; min-width: 140px; gap: 4px;">
+            <label for="logWeightDate" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Tanggal</label>
+            <input type="date" id="logWeightDate" class="form-input" style="padding: 8px 12px; font-size: 14px;" required />
+          </div>
+          <button type="submit" class="btn-primary-pill" style="height: 38px; font-size: 12px; padding: 6px 16px;">Catat Berat</button>
+        </form>
+
         <div class="history-table-wrap">
           <table class="history-table">
             <thead>
               <tr>
                 <th>Tanggal</th>
-                <th>Nama</th>
-                <th>Tinggi (cm)</th>
-                <th>Berat (kg)</th>
+                <th>Berat Badan (kg)</th>
+                <th>Perubahan</th>
                 <th>BMI</th>
-                <th>Target Kalori</th>
-                <th>Goal</th>
+                <th>Kategori BMI</th>
                 <th>Aksi</th>
               </tr>
             </thead>
