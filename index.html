@@ -463,13 +463,95 @@
 
         <div class="chart-card util-card">
           <div class="chart-head">
-            <h3>Progres Target Diet</h3>
-            <span class="chart-tag">Simulasi Harian</span>
+            <h3>Progres Kalori & Aktivitas</h3>
+            <button type="button" class="btn-ghost-dark" id="btnToggleLog" style="font-size: 12px; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 4px;">
+              <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> Catat Aktivitas
+            </button>
           </div>
+          
+          <!-- Logging Panel (hidden by default) -->
+          <div id="logPanel" style="display: none; flex-direction: column; gap: var(--sp-xs); margin-bottom: var(--sp-sm); padding: var(--sp-sm); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--background);">
+            <!-- Tab Headers -->
+            <div class="log-tabs" style="display: flex; border-bottom: 1px solid var(--border); margin-bottom: var(--sp-xs); gap: 4px;">
+              <button type="button" class="log-tab-btn active" id="tabFood" style="flex: 1; text-align: center; padding: 6px 12px; font-family: var(--font-display); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--primary); border: none; border-bottom: 2px solid var(--primary); background: transparent;">🍳 Makanan</button>
+              <button type="button" class="log-tab-btn" id="tabWorkout" style="flex: 1; text-align: center; padding: 6px 12px; font-family: var(--font-display); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--secondary); border: none; border-bottom: 2px solid transparent; background: transparent;">🏃‍♂️ Latihan</button>
+            </div>
+
+            <!-- Food Form -->
+            <form id="foodLogForm" style="display: flex; flex-direction: column; gap: var(--sp-xs);">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-xs);">
+                <div class="form-group" style="gap: 2px;">
+                  <label for="logFoodName" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Nama Makanan</label>
+                  <input type="text" id="logFoodName" class="form-input" style="padding: 6px 10px; font-size: 13px;" placeholder="Ayam bakar" autocomplete="off" />
+                </div>
+                <div class="form-group" style="gap: 2px;">
+                  <label for="logFoodKal" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Kalori (kcal)</label>
+                  <input type="number" id="logFoodKal" class="form-input" style="padding: 6px 10px; font-size: 13px;" placeholder="350" min="0" required />
+                </div>
+                <div class="form-group" style="gap: 2px;">
+                  <label for="logFoodProtein" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Protein (g)</label>
+                  <input type="number" id="logFoodProtein" class="form-input" style="padding: 6px 10px; font-size: 13px;" placeholder="20" min="0" />
+                </div>
+                <div class="form-group" style="gap: 2px;">
+                  <label for="logFoodCarbs" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Karbo (g)</label>
+                  <input type="number" id="logFoodCarbs" class="form-input" style="padding: 6px 10px; font-size: 13px;" placeholder="40" min="0" />
+                </div>
+                <div class="form-group" style="gap: 2px;">
+                  <label for="logFoodFat" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Lemak (g)</label>
+                  <input type="number" id="logFoodFat" class="form-input" style="padding: 6px 10px; font-size: 13px;" placeholder="10" min="0" />
+                </div>
+              </div>
+              <div style="display: flex; gap: var(--sp-sm); justify-content: flex-end; align-items: center; margin-top: 4px;">
+                <button type="button" class="btn-ghost-dark btn-reset-daily" style="font-size: 11px; font-weight: 500; color: var(--secondary);">Reset Hari Ini</button>
+                <button type="submit" class="btn-primary-pill" style="height: 32px; font-size: 11px; padding: 4px 12px; line-height: 1;">Tambah Makanan</button>
+              </div>
+            </form>
+
+            <!-- Exercise Form -->
+            <form id="workoutLogForm" style="display: none; flex-direction: column; gap: var(--sp-xs);">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-xs);">
+                <div class="form-group" style="gap: 2px;">
+                  <label for="logExName" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Nama Latihan</label>
+                  <input type="text" id="logExName" class="form-input" style="padding: 6px 10px; font-size: 13px;" placeholder="Jogging sore" autocomplete="off" required />
+                </div>
+                <div class="form-group" style="gap: 2px;">
+                  <label for="logExKal" style="font-size: 11px; font-weight: 600; color: var(--neutral);">Kalori Terbakar (kcal)</label>
+                  <input type="number" id="logExKal" class="form-input" style="padding: 6px 10px; font-size: 13px;" placeholder="250" min="1" required />
+                </div>
+              </div>
+              <div style="display: flex; gap: var(--sp-sm); justify-content: flex-end; align-items: center; margin-top: 4px;">
+                <button type="button" class="btn-ghost-dark btn-reset-daily" style="font-size: 11px; font-weight: 500; color: var(--secondary);">Reset Hari Ini</button>
+                <button type="submit" class="btn-primary-pill" style="height: 32px; font-size: 11px; padding: 4px 12px; line-height: 1;">Tambah Latihan</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Calorie Budget Equation Widget -->
+          <div class="cal-budget-widget" style="margin-bottom: var(--sp-sm);">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px; background: var(--surface);">
+              <div>
+                <div style="font-size: 10px; font-weight: 700; color: var(--on-surface-muted); text-transform: uppercase;">Target</div>
+                <div id="budgetTarget" style="font-family: var(--font-display); font-size: 15px; font-weight: 800; color: var(--neutral); margin-top: 2px;">0</div>
+              </div>
+              <div>
+                <div style="font-size: 10px; font-weight: 700; color: var(--on-surface-muted); text-transform: uppercase;">Makanan</div>
+                <div id="budgetFood" style="font-family: var(--font-display); font-size: 15px; font-weight: 800; color: #248a3d; margin-top: 2px;">+0</div>
+              </div>
+              <div>
+                <div style="font-size: 10px; font-weight: 700; color: var(--on-surface-muted); text-transform: uppercase;">Latihan</div>
+                <div id="budgetBurned" style="font-family: var(--font-display); font-size: 15px; font-weight: 800; color: var(--primary); margin-top: 2px;">-0</div>
+              </div>
+              <div style="border-left: 1px solid var(--border);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--on-surface-muted); text-transform: uppercase;">Sisa</div>
+                <div id="budgetRemaining" style="font-family: var(--font-display); font-size: 15px; font-weight: 800; color: var(--neutral); margin-top: 2px;">0</div>
+              </div>
+            </div>
+          </div>
+
           <div class="prog-section" id="progressSection">
             <div class="prog-row">
-              <div class="prog-hd"><span>Kalori Harian</span><span id="progKalLabel">–</span></div>
-              <div class="prog-track"><div class="prog-fill fill-blue" id="progKal"></div></div>
+              <div class="prog-hd"><span>Net Kalori Terpenuhi</span><span id="progKalLabel">–</span></div>
+              <div class="prog-track"><div class="prog-fill fill-orange" id="progKal"></div></div>
             </div>
             <div class="prog-row">
               <div class="prog-hd"><span>Protein</span><span id="progProteinLabel">–</span></div>
@@ -483,7 +565,14 @@
               <div class="prog-hd"><span>Lemak</span><span id="progFatLabel">–</span></div>
               <div class="prog-track"><div class="prog-fill fill-purple" id="progFat"></div></div>
             </div>
-            <p class="prog-note">* Simulasi berdasarkan target kalori harian</p>
+          </div>
+
+          <!-- Logged Workouts List -->
+          <div id="loggedWorkoutsContainer" style="margin-top: var(--sp-sm); border-top: 1px solid var(--border); padding-top: var(--sp-xs); display: none;">
+            <h4 style="font-family: var(--font-display); font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--on-surface-muted); margin-bottom: var(--sp-xs);">Latihan Hari Ini</h4>
+            <div id="workoutList" style="display: flex; flex-direction: column; gap: 6px;">
+              <!-- filled by JS -->
+            </div>
           </div>
         </div>
       </div>

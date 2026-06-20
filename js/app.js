@@ -1,5 +1,13 @@
 'use strict';
 
+// Konfigurasi default Chart.js agar sesuai dengan tema Strava Momentum
+if (window.Chart) {
+  Chart.defaults.font.family = "'Roboto', 'Helvetica', 'Arial', sans-serif";
+  Chart.defaults.color = '#6B7280';
+  Chart.defaults.plugins.tooltip.titleFont = { family: "'Outfit', sans-serif", weight: 'bold' };
+  Chart.defaults.plugins.tooltip.bodyFont = { family: "'Roboto', sans-serif" };
+}
+
 // simpan hasil kalkulasi terakhir
 let calcResult = null;
 
@@ -25,6 +33,26 @@ function showPage(pageId) {
   document.getElementById('navLinks').classList.remove('open');
 
   if (pageId === 'dashboard') {
+    // Otomatis muat data terakhir dari riwayat jika calcResult kosong
+    if (!calcResult) {
+      const history = JSON.parse(localStorage.getItem('fitlogic_history')) || [];
+      if (history.length > 0) {
+        const last = history[0];
+        calcResult = {
+          nama: last.name,
+          umur: last.age,
+          gender: last.gender,
+          tinggi: last.height,
+          berat: last.weight,
+          aktivFak: last.activity,
+          goal: last.goal,
+          target: last.target,
+          bmi: last.bmi,
+          macros: calcMacros(last.target, last.goal),
+          bmiCat: getBMICategory(last.bmi)
+        };
+      }
+    }
     renderDashboard();
     renderHistory();
   }
@@ -553,10 +581,16 @@ function renderCalorieChart(r) {
       scales: {
         y: {
           beginAtZero: false,
-          grid: { color: 'rgba(0,0,0,0.05)' },
-          ticks: { callback: v => v.toLocaleString('id-ID') }
+          grid: { color: 'rgba(18, 18, 18, 0.05)' },
+          ticks: { 
+            callback: v => v.toLocaleString('id-ID'),
+            font: { family: "'Outfit', sans-serif" }
+          }
         },
-        x: { grid: { display: false } }
+        x: { 
+          grid: { display: false },
+          ticks: { font: { family: "'Outfit', sans-serif", weight: 'bold' } }
+        }
       }
     }
   });
@@ -605,24 +639,92 @@ function renderBMIChart(r) {
     `BMI kamu: <strong style="color:${r.bmiCat.color}">${r.bmi.toFixed(1)}</strong> – ${r.bmiCat.label}`;
 }
 
+// Ambil data log konsumsi harian
+function getDailyLog() {
+  const defaultLog = { calories: 0, protein: 0, carbs: 0, fat: 0, burned: 0, workouts: [] };
+  
+  // Reset otomatis jika hari berganti
+  const todayStr = new Date().toDateString();
+  const savedLog = JSON.parse(localStorage.getItem('fitlogic_daily_log'));
+  
+  if (savedLog && savedLog.date === todayStr) {
+    // Migrasi data jika properti baru belum ada
+    if (savedLog.burned === undefined) savedLog.burned = 0;
+    if (savedLog.workouts === undefined) savedLog.workouts = [];
+    return savedLog;
+  } else {
+    const newLog = { ...defaultLog, date: todayStr };
+    saveDailyLog(newLog);
+    return newLog;
+  }
+}
+
+// Simpan data log konsumsi harian
+function saveDailyLog(log) {
+  localStorage.setItem('fitlogic_daily_log', JSON.stringify(log));
+}
+
 // progress bar simulasi konsumsi harian
 function renderProgressBars(r) {
   const m = r.macros;
+  const currentLog = getDailyLog();
 
-  // simulasi progress hari ini (demo, bukan data real)
-  const simPct = { kal: 72, protein: 68, carbs: 80, fat: 65 };
+  // Net Kalori = Makanan - Latihan
+  const netCalories = Math.max(0, currentLog.calories - currentLog.burned);
+  const remaining = r.target - currentLog.calories + currentLog.burned;
 
-  document.getElementById('progKalLabel').textContent     = `${Math.round(r.target * simPct.kal / 100).toLocaleString('id-ID')} / ${r.target.toLocaleString('id-ID')} kcal`;
-  document.getElementById('progProteinLabel').textContent = `${Math.round(m.proteinG * simPct.protein / 100)}g / ${m.proteinG}g`;
-  document.getElementById('progCarbsLabel').textContent   = `${Math.round(m.carbsG * simPct.carbs / 100)}g / ${m.carbsG}g`;
-  document.getElementById('progFatLabel').textContent     = `${Math.round(m.fatG * simPct.fat / 100)}g / ${m.fatG}g`;
+  const calPct = r.target > 0 ? Math.min(Math.round((netCalories / r.target) * 100), 100) : 0;
+  const proteinPct = m.proteinG > 0 ? Math.min(Math.round((currentLog.protein / m.proteinG) * 100), 100) : 0;
+  const carbsPct = m.carbsG > 0 ? Math.min(Math.round((currentLog.carbs / m.carbsG) * 100), 100) : 0;
+  const fatPct = m.fatG > 0 ? Math.min(Math.round((currentLog.fat / m.fatG) * 100), 100) : 0;
+
+  // Render Widget Persamaan Budget
+  document.getElementById('budgetTarget').textContent = r.target.toLocaleString('id-ID');
+  document.getElementById('budgetFood').textContent   = '+' + currentLog.calories.toLocaleString('id-ID');
+  document.getElementById('budgetBurned').textContent = '-' + currentLog.burned.toLocaleString('id-ID');
+  
+  const remainingEl = document.getElementById('budgetRemaining');
+  remainingEl.textContent = remaining.toLocaleString('id-ID');
+  if (remaining < 0) {
+    remainingEl.style.color = 'var(--error)';
+  } else {
+    remainingEl.style.color = 'var(--neutral)';
+  }
+
+  // Update Label Progres
+  document.getElementById('progKalLabel').textContent     = `${netCalories.toLocaleString('id-ID')} / ${r.target.toLocaleString('id-ID')} kcal (${calPct}%)`;
+  document.getElementById('progProteinLabel').textContent = `${currentLog.protein}g / ${m.proteinG}g (${proteinPct}%)`;
+  document.getElementById('progCarbsLabel').textContent   = `${currentLog.carbs}g / ${m.carbsG}g (${carbsPct}%)`;
+  document.getElementById('progFatLabel').textContent     = `${currentLog.fat}g / ${m.fatG}g (${fatPct}%)`;
 
   setTimeout(() => {
-    document.getElementById('progKal').style.width     = simPct.kal + '%';
-    document.getElementById('progProtein').style.width = simPct.protein + '%';
-    document.getElementById('progCarbs').style.width   = simPct.carbs + '%';
-    document.getElementById('progFat').style.width     = simPct.fat + '%';
+    document.getElementById('progKal').style.width     = calPct + '%';
+    document.getElementById('progProtein').style.width = proteinPct + '%';
+    document.getElementById('progCarbs').style.width   = carbsPct + '%';
+    document.getElementById('progFat').style.width     = fatPct + '%';
   }, 200);
+
+  // Render Daftar Latihan Hari Ini
+  const workoutsContainer = document.getElementById('loggedWorkoutsContainer');
+  const workoutList = document.getElementById('workoutList');
+  if (workoutsContainer && workoutList) {
+    if (currentLog.workouts && currentLog.workouts.length > 0) {
+      workoutsContainer.style.display = 'block';
+      workoutList.innerHTML = currentLog.workouts.map((w) => `
+        <div class="workout-list-item" style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--r-sm); font-size: 13px;">
+          <span style="font-weight: 600; color: var(--neutral); display: flex; align-items: center; gap: 6px;">
+            <i data-lucide="dumbbell" style="width: 14px; height: 14px; color: var(--primary);"></i>
+            ${w.activity}
+          </span>
+          <span style="color: var(--primary); font-weight: 700;">-${w.calories} kcal</span>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+    } else {
+      workoutsContainer.style.display = 'none';
+      workoutList.innerHTML = '';
+    }
+  }
 }
 
 // reset form dan hapus semua error
@@ -776,6 +878,115 @@ if (glossarySearch) {
     });
   });
 }
+
+// Inisialisasi event listener dan menu
+document.addEventListener('DOMContentLoaded', () => {
+  const btnToggleLog = document.getElementById('btnToggleLog');
+  const logPanel = document.getElementById('logPanel');
+  
+  const tabFood = document.getElementById('tabFood');
+  const tabWorkout = document.getElementById('tabWorkout');
+  
+  const foodLogForm = document.getElementById('foodLogForm');
+  const workoutLogForm = document.getElementById('workoutLogForm');
+
+  // Toggle Panel
+  if (btnToggleLog && logPanel) {
+    btnToggleLog.addEventListener('click', () => {
+      const isHidden = logPanel.style.display === 'none';
+      logPanel.style.display = isHidden ? 'flex' : 'none';
+    });
+  }
+
+  // Toggle Tabs
+  if (tabFood && tabWorkout) {
+    tabFood.addEventListener('click', () => {
+      tabFood.classList.add('active');
+      tabFood.style.color = 'var(--primary)';
+      tabFood.style.borderBottomColor = 'var(--primary)';
+      
+      tabWorkout.classList.remove('active');
+      tabWorkout.style.color = 'var(--secondary)';
+      tabWorkout.style.borderBottomColor = 'transparent';
+      
+      foodLogForm.style.display = 'flex';
+      workoutLogForm.style.display = 'none';
+    });
+
+    tabWorkout.addEventListener('click', () => {
+      tabWorkout.classList.add('active');
+      tabWorkout.style.color = 'var(--primary)';
+      tabWorkout.style.borderBottomColor = 'var(--primary)';
+      
+      tabFood.classList.remove('active');
+      tabFood.style.color = 'var(--secondary)';
+      tabFood.style.borderBottomColor = 'transparent';
+      
+      workoutLogForm.style.display = 'flex';
+      foodLogForm.style.display = 'none';
+    });
+  }
+
+  // Food Form submit
+  if (foodLogForm) {
+    foodLogForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const addKal = parseFloat(document.getElementById('logFoodKal').value) || 0;
+      const addProtein = parseFloat(document.getElementById('logFoodProtein').value) || 0;
+      const addCarbs = parseFloat(document.getElementById('logFoodCarbs').value) || 0;
+      const addFat = parseFloat(document.getElementById('logFoodFat').value) || 0;
+
+      const currentLog = getDailyLog();
+      currentLog.calories += addKal;
+      currentLog.protein += addProtein;
+      currentLog.carbs += addCarbs;
+      currentLog.fat += addFat;
+
+      saveDailyLog(currentLog);
+      foodLogForm.reset();
+      logPanel.style.display = 'none';
+
+      if (calcResult) {
+        renderProgressBars(calcResult);
+      }
+    });
+  }
+
+  // Workout Form submit
+  if (workoutLogForm) {
+    workoutLogForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('logExName').value.trim() || 'Latihan';
+      const addKal = parseFloat(document.getElementById('logExKal').value) || 0;
+
+      const currentLog = getDailyLog();
+      currentLog.burned += addKal;
+      if (!currentLog.workouts) currentLog.workouts = [];
+      currentLog.workouts.push({ activity: name, calories: addKal });
+
+      saveDailyLog(currentLog);
+      workoutLogForm.reset();
+      logPanel.style.display = 'none';
+
+      if (calcResult) {
+        renderProgressBars(calcResult);
+      }
+    });
+  }
+
+  // Reset Hari Ini handlers
+  document.addEventListener('click', (e) => {
+    if (e.target && e.target.classList.contains('btn-reset-daily')) {
+      if (confirm('Reset semua log makanan dan latihan hari ini?')) {
+        const todayStr = new Date().toDateString();
+        saveDailyLog({ calories: 0, protein: 0, carbs: 0, fat: 0, burned: 0, workouts: [], date: todayStr });
+        if (calcResult) {
+          renderProgressBars(calcResult);
+        }
+      }
+    }
+  });
+});
 
 // init
 showPage('home');
