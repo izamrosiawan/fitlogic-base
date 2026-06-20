@@ -7,7 +7,7 @@
   <title>FitLogic – Kalkulator Diet</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -32,35 +32,39 @@
   <!-- halaman beranda -->
   <section class="page active" id="page-home">
 
-    <!-- hero: dark tile penuh viewport -->
-    <div class="hero-tile">
-      <div class="tile-inner">
-        <p class="eyebrow">Kalkulator Nutrisi Cerdas</p>
-        <h1 class="hero-hl">FitLogic.</h1>
-        <p class="hero-tagline">Rencanakan makan. Raih target.</p>
-        <p class="hero-desc">
-          Hitung BMI, BMR, TDEE, dan target kalori harian<br>
-          menggunakan rumus Mifflin-St Jeor.
-        </p>
-        <div class="cta-row">
-          <button class="btn-primary-pill" onclick="showPage('calculator')">Mulai Hitung</button>
-          <a href="#features" class="btn-ghost-dark">Pelajari Lebih</a>
-        </div>
-        <div class="hero-badges">
-          <div class="badge">
-            <span class="badge-num">BMI</span>
-            <span class="badge-label">Body Mass Index</span>
+    <!-- hero: three column layout -->
+    <div class="hero-three-col">
+      <div class="hero-col hero-col-left" style="background-image: url('images/strava_hero_left.png');"></div>
+      <div class="hero-col hero-col-center">
+        <div class="tile-inner">
+          <p class="eyebrow">Kalkulator Nutrisi Cerdas</p>
+          <h1 class="hero-hl">FitLogic.</h1>
+          <p class="hero-tagline">Rencanakan makan. Raih target.</p>
+          <p class="hero-desc">
+            Hitung BMI, BMR, TDEE, dan target kalori harian<br>
+            menggunakan rumus Mifflin-St Jeor.
+          </p>
+          <div class="cta-row">
+            <button class="btn-primary-pill" onclick="showPage('calculator')" id="hero-btn-calc">Mulai Hitung</button>
+            <button class="btn-ghost-ink" onclick="showPage('calculator')" id="hero-btn-secondary">Isi Data</button>
           </div>
-          <div class="badge">
-            <span class="badge-num">BMR</span>
-            <span class="badge-label">Basal Metabolic Rate</span>
-          </div>
-          <div class="badge">
-            <span class="badge-num">TDEE</span>
-            <span class="badge-label">Total Daily Energy</span>
+          <div class="hero-badges">
+            <div class="badge">
+              <span class="badge-num">BMI</span>
+              <span class="badge-label">Body Mass Index</span>
+            </div>
+            <div class="badge">
+              <span class="badge-num">BMR</span>
+              <span class="badge-label">Basal Metabolic Rate</span>
+            </div>
+            <div class="badge">
+              <span class="badge-num">TDEE</span>
+              <span class="badge-label">Total Daily Energy</span>
+            </div>
           </div>
         </div>
       </div>
+      <div class="hero-col hero-col-right" style="background-image: url('images/strava_hero_right.png');"></div>
     </div>
 
     <!-- fitur: section parchment -->

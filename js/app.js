@@ -131,10 +131,10 @@ function calcBMI(weight, height) {
 }
 
 function getBMICategory(bmi) {
-  if (bmi < 18.5) return { label: 'Kurus (Underweight)', color: '#0071e3', pct: 20 };
-  if (bmi < 25)   return { label: 'Normal',              color: '#34c759', pct: 45 };
-  if (bmi < 30)   return { label: 'Gemuk (Overweight)',  color: '#ff9f0a', pct: 70 };
-  return                  { label: 'Obesitas',           color: '#ff3b30', pct: 90 };
+  if (bmi < 18.5) return { label: 'Kurus (Underweight)', color: '#0066cc', pct: 20 };
+  if (bmi < 25)   return { label: 'Normal',              color: '#248a3d', pct: 45 };
+  if (bmi < 30)   return { label: 'Gemuk (Overweight)',  color: '#FC5200', pct: 70 };
+  return                  { label: 'Obesitas',           color: '#E11D48', pct: 90 };
 }
 
 function calcTargetCalories(tdee, goal) {
@@ -485,7 +485,7 @@ function renderMacroChart(r) {
       labels: ['Protein', 'Karbohidrat', 'Lemak'],
       datasets: [{
         data: [m.proteinKcal, m.carbsKcal, m.fatKcal],
-        backgroundColor: ['#34c759', '#ff9f0a', '#af52de'],
+        backgroundColor: ['#248a3d', '#FC5200', '#7c3aed'],
         borderWidth: 0,
         hoverOffset: 6
       }]
@@ -506,7 +506,7 @@ function renderMacroChart(r) {
   });
 
   const legend = document.getElementById('macroLegend');
-  const colors = ['#34c759', '#ff9f0a', '#af52de'];
+  const colors = ['#248a3d', '#FC5200', '#7c3aed'];
   const labels = ['Protein', 'Karbohidrat', 'Lemak'];
   const grams  = [m.proteinG + 'g', m.carbsG + 'g', m.fatG + 'g'];
 
@@ -531,11 +531,9 @@ function renderCalorieChart(r) {
         label: 'Kalori (kcal)',
         data: [Math.round(r.bmr), Math.round(r.tdee), r.target],
         backgroundColor: [
-          'rgba(0,113,227,0.75)',
-          'rgba(52,199,89,0.75)',
-          (r.goal === 'lose-fast' || r.goal === 'lose-slow') ? 'rgba(255,59,48,0.75)' :
-          (r.goal === 'gain-fast' || r.goal === 'gain-slow') ? 'rgba(175,82,222,0.75)' :
-                                                               'rgba(255,159,10,0.75)'
+          'rgba(145, 142, 137, 0.85)',
+          'rgba(55, 65, 81, 0.85)',
+          'rgba(252, 82, 0, 0.95)'
         ],
         borderRadius: 10,
         borderSkipped: false
@@ -571,7 +569,7 @@ function renderBMIChart(r) {
 
   // 4 segmen: kurus, normal, gemuk, obesitas — range 0–40
   const segments = [18.5, 6.5, 5, 10];
-  const colors   = ['#0071e3', '#34c759', '#ff9f0a', '#ff3b30'];
+  const colors   = ['#0066cc', '#248a3d', '#FC5200', '#E11D48'];
 
   chartInstances.bmi = new Chart(ctx, {
     type: 'doughnut',
