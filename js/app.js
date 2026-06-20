@@ -808,12 +808,62 @@ function renderProgressBars(r) {
   }
 }
 
+// membersihkan data di halaman hasil perhitungan kembali ke default
+function clearResultsPage() {
+  document.getElementById('rhcName').textContent     = '–';
+  document.getElementById('rhcGoal').textContent     = '–';
+  document.getElementById('rhcCalories').textContent = '–';
+
+  document.getElementById('valBMI').textContent = '–';
+  document.getElementById('catBMI').textContent = '–';
+  document.getElementById('progBMI').style.width = '0%';
+
+  document.getElementById('valBMR').textContent    = '–';
+  document.getElementById('valTDEE').textContent   = '–';
+  document.getElementById('valTarget').textContent = '–';
+
+  document.getElementById('macroProtein').textContent = '–';
+  document.getElementById('macroCarbs').textContent   = '–';
+  document.getElementById('macroFat').textContent     = '–';
+  
+  document.getElementById('fillProtein').style.width = '0%';
+  document.getElementById('fillCarbs').style.width   = '0%';
+  document.getElementById('fillFat').style.width     = '0%';
+
+  document.getElementById('conclusionText').innerHTML = '';
+  document.getElementById('healthAlert').style.display = 'none';
+
+  // Diet Match Score
+  document.getElementById('scoreText').textContent = '--%';
+  document.getElementById('scoreStatus').textContent = 'Mengevaluasi...';
+  document.getElementById('scoreStatus').style.color = 'var(--secondary)';
+  document.getElementById('scoreCircle').style.borderColor = 'var(--border)';
+  document.getElementById('scoreReason').textContent = 'Mengukur tingkat kecocokan target diet dengan kondisi fisikmu.';
+
+  // Daily Menu Recommendations
+  document.getElementById('kcalSarapan').textContent = '-- kcal';
+  document.getElementById('kcalSiang').textContent    = '-- kcal';
+  document.getElementById('kcalMalam').textContent    = '-- kcal';
+  document.getElementById('kcalCamilan').textContent  = '-- kcal';
+
+  document.getElementById('menuSarapan').innerHTML = 'Memuat menu...';
+  document.getElementById('menuSiang').innerHTML    = 'Memuat menu...';
+  document.getElementById('menuMalam').innerHTML    = 'Memuat menu...';
+  document.getElementById('menuCamilan').innerHTML  = 'Memuat menu...';
+}
+
 // reset form dan hapus semua error
 function resetForm() {
   document.getElementById('calcForm').reset();
   document.querySelectorAll('.form-input, .form-select').forEach(el => el.classList.remove('error'));
   document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
+  
+  // Reset pilihan radio manual untuk kompatibilitas browser
+  document.querySelectorAll('input[name="goal"]').forEach(r => r.checked = false);
+  document.querySelectorAll('input[name="gender"]').forEach(r => r.checked = false);
+
   calcResult = null;
+  clearResultsPage();
 }
 
 // hapus error saat user mulai ngetik ulang
