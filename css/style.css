@@ -1520,3 +1520,98 @@ img, canvas {
     flex-direction: column;
   }
 }
+
+/* ---- Target Analysis Card ---- */
+.target-analysis-card {
+  border-left: 4px solid var(--primary) !important;
+}
+.target-analysis-head {
+  display: flex;
+  gap: var(--sp-sm);
+  align-items: center;
+  margin-bottom: var(--sp-md);
+}
+.target-analysis-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--primary);
+  stroke-width: 2.5px;
+}
+.target-analysis-head h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--neutral);
+}
+.target-analysis-sub {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--on-surface-muted);
+}
+.target-analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-sm);
+  margin-bottom: var(--sp-md);
+}
+.target-stat-item {
+  background: var(--background);
+  border: 1px solid var(--border);
+  padding: var(--sp-sm);
+  border-radius: var(--r-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+.tsi-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--on-surface-muted);
+}
+.tsi-val {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--neutral);
+}
+#resWeightDiff {
+  color: var(--primary);
+}
+.target-action-tips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-sm);
+}
+.tip-item {
+  display: flex;
+  gap: var(--sp-sm);
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: var(--r-md);
+  background: rgba(252, 82, 0, 0.03);
+  border-left: 3px solid var(--primary);
+}
+.tip-item-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--primary);
+  stroke-width: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.tip-item h4 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--neutral);
+  margin-bottom: 2px;
+}
+.tip-item p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--on-surface-muted);
+  line-height: 1.4;
+}

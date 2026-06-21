@@ -149,6 +149,12 @@
             <span class="form-error" id="err-weight"></span>
           </div>
 
+          <div class="form-group" id="fg-target-weight">
+            <label for="inputTargetBerat" class="form-label">Target Berat Badan <span class="unit-note">kg</span></label>
+            <input type="number" id="inputTargetBerat" class="form-input" placeholder="60" min="1" step="0.1" />
+            <span class="form-error" id="err-target-weight"></span>
+          </div>
+
           <div class="form-group" id="fg-activity">
             <label for="selectAktivitas" class="form-label">Tingkat Aktivitas</label>
             <select id="selectAktivitas" class="form-select">
@@ -163,46 +169,22 @@
           </div>
 
           <div class="form-group" id="fg-goal">
-            <label class="form-label">Target Diet</label>
+            <label class="form-label">Intensitas Program</label>
             <div class="goal-grid">
-              <label class="goal-chip" data-value="lose-fast">
-                <input type="radio" name="goal" value="lose-fast" id="goalLoseFast" />
-                <div class="goal-chip-inner">
-                  <i data-lucide="flame" class="goal-icon"></i>
-                  <span class="goal-name">Lose Weight Fast</span>
-                  <span class="goal-sub">Defisit ~500 kkal</span>
-                </div>
-              </label>
-              <label class="goal-chip" data-value="lose-slow">
-                <input type="radio" name="goal" value="lose-slow" id="goalLoseSlow" />
+              <label class="goal-chip" data-value="intensity-slow">
+                <input type="radio" name="intensity" value="intensity-slow" id="intensitySlow" />
                 <div class="goal-chip-inner">
                   <i data-lucide="trending-down" class="goal-icon"></i>
-                  <span class="goal-name">Lose Weight Slow</span>
-                  <span class="goal-sub">Defisit ~250 kkal</span>
+                  <span class="goal-name">Santai (Perlahan)</span>
+                  <span class="goal-sub">Beda ~250 kkal/hari</span>
                 </div>
               </label>
-              <label class="goal-chip" data-value="maintain">
-                <input type="radio" name="goal" value="maintain" id="goalMaintain" />
+              <label class="goal-chip" data-value="intensity-fast">
+                <input type="radio" name="intensity" value="intensity-fast" id="intensityFast" />
                 <div class="goal-chip-inner">
-                  <i data-lucide="scale" class="goal-icon"></i>
-                  <span class="goal-name">Maintain</span>
-                  <span class="goal-sub">Kalori harian</span>
-                </div>
-              </label>
-              <label class="goal-chip" data-value="gain-slow">
-                <input type="radio" name="goal" value="gain-slow" id="goalGainSlow" />
-                <div class="goal-chip-inner">
-                  <i data-lucide="trending-up" class="goal-icon"></i>
-                  <span class="goal-name">Gain Weight Slow</span>
-                  <span class="goal-sub">Surplus ~250 kkal</span>
-                </div>
-              </label>
-              <label class="goal-chip" data-value="gain-fast">
-                <input type="radio" name="goal" value="gain-fast" id="goalGainFast" />
-                <div class="goal-chip-inner">
-                  <i data-lucide="dumbbell" class="goal-icon"></i>
-                  <span class="goal-name">Gain Weight Fast</span>
-                  <span class="goal-sub">Surplus ~500 kkal</span>
+                  <i data-lucide="flame" class="goal-icon"></i>
+                  <span class="goal-name">Agresif (Cepat)</span>
+                  <span class="goal-sub">Beda ~500 kkal/hari</span>
                 </div>
               </label>
             </div>
@@ -349,6 +331,34 @@
         </div>
       </div>
 
+      <!-- Analisis & Rencana Aksi Target Berat Badan -->
+      <div class="util-card target-analysis-card" id="targetAnalysisSection" style="margin-bottom: var(--sp-md);">
+        <div class="target-analysis-head" style="display: flex; gap: var(--sp-sm); align-items: center; margin-bottom: var(--sp-md);">
+          <i data-lucide="target" class="target-analysis-icon" style="width: 32px; height: 32px; color: var(--primary); stroke-width: 2.5px;"></i>
+          <div>
+            <h2 style="font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--neutral);">Analisis & Langkah Aksi Berat Badan</h2>
+            <p class="target-analysis-sub" style="font-family: var(--font-body); font-size: 13px; color: var(--on-surface-muted);">Langkah konkret dan estimasi waktu untuk mencapai berat badan idealmu.</p>
+          </div>
+        </div>
+        <div class="target-analysis-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-sm); margin-bottom: var(--sp-md);">
+          <div class="target-stat-item" style="background: var(--background); border: 1px solid var(--border); padding: var(--sp-sm); border-radius: var(--r-md); display: flex; flex-direction: column; gap: 4px; text-align: center;">
+            <span class="tsi-label" style="font-family: var(--font-display); font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--on-surface-muted);">Target Berat Badan</span>
+            <span class="tsi-val" id="resTargetWeight" style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--neutral);">– kg</span>
+          </div>
+          <div class="target-stat-item" style="background: var(--background); border: 1px solid var(--border); padding: var(--sp-sm); border-radius: var(--r-md); display: flex; flex-direction: column; gap: 4px; text-align: center;">
+            <span class="tsi-label" style="font-family: var(--font-display); font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--on-surface-muted);">Selisih Berat</span>
+            <span class="tsi-val" id="resWeightDiff" style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--primary);">– kg</span>
+          </div>
+          <div class="target-stat-item" style="background: var(--background); border: 1px solid var(--border); padding: var(--sp-sm); border-radius: var(--r-md); display: flex; flex-direction: column; gap: 4px; text-align: center;">
+            <span class="tsi-label" style="font-family: var(--font-display); font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--on-surface-muted);">Estimasi Waktu</span>
+            <span class="tsi-val" id="resTimeEstimate" style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--neutral);">– minggu</span>
+          </div>
+        </div>
+        <div class="target-action-tips" id="targetActionTips" style="display: flex; flex-direction: column; gap: var(--sp-sm);">
+          <!-- Dinamis diisi lewat JS -->
+        </div>
+      </div>
+
       <!-- pembagian makronutrisi -->
       <div class="macro-card util-card" id="macroSection">
         <h2>Pembagian Makronutrisi</h2>
@@ -428,6 +438,7 @@
       <div class="summary-row" id="dashSummary">
         <div class="sum-chip"><span class="sc-label">Nama</span><span class="sc-val" id="dNama">–</span></div>
         <div class="sum-chip"><span class="sc-label">Target</span><span class="sc-val" id="dGoal">–</span></div>
+        <div class="sum-chip"><span class="sc-label">Target Berat</span><span class="sc-val" id="dTargetWeight">–</span></div>
         <div class="sum-chip"><span class="sc-label">BMI</span><span class="sc-val" id="dBMI">–</span></div>
         <div class="sum-chip"><span class="sc-label">Kalori/hari</span><span class="sc-val" id="dKalori">–</span></div>
       </div>

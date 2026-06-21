@@ -45,6 +45,7 @@ function showPage(pageId) {
           gender: last.gender,
           tinggi: last.height,
           berat: last.weight,
+          targetBerat: last.targetWeight || last.weight,
           aktivFak: last.activity,
           goal: last.goal,
           target: last.target,
@@ -128,6 +129,14 @@ function validateForm() {
     clearError('inputBerat', 'err-weight');
   }
 
+  const targetBerat = parseFloat(getVal('inputTargetBerat'));
+  if (!getVal('inputTargetBerat') || isNaN(targetBerat) || targetBerat <= 0) {
+    showError('inputTargetBerat', 'err-target-weight', 'Target berat badan harus lebih dari 0 kg.');
+    valid = false;
+  } else {
+    clearError('inputTargetBerat', 'err-target-weight');
+  }
+
   const aktivitas = getVal('selectAktivitas');
   if (!aktivitas) {
     showError('selectAktivitas', 'err-activity', 'Pilih tingkat aktivitas.');
@@ -136,9 +145,13 @@ function validateForm() {
     clearError('selectAktivitas', 'err-activity');
   }
 
-  const goal = document.querySelector('input[name="goal"]:checked');
-  if (!goal) {
-    document.getElementById('err-goal').textContent = 'Pilih target diet.';
+  const beratVal = parseFloat(getVal('inputBerat'));
+  const targetBeratVal = parseFloat(getVal('inputTargetBerat'));
+  const intensity = document.querySelector('input[name="intensity"]:checked');
+  const fgGoal = document.getElementById('fg-goal');
+  
+  if (beratVal !== targetBeratVal && !intensity) {
+    document.getElementById('err-goal').textContent = 'Pilih intensitas program.';
     valid = false;
   } else {
     document.getElementById('err-goal').textContent = '';
@@ -217,13 +230,23 @@ document.getElementById('calcForm').addEventListener('submit', function(e) {
   e.preventDefault();
   if (!validateForm()) return;
 
-  const nama     = getVal('inputNama');
-  const umur     = parseFloat(getVal('inputUmur'));
-  const gender   = document.querySelector('input[name="gender"]:checked').value;
-  const tinggi   = parseFloat(getVal('inputTinggi'));
-  const berat    = parseFloat(getVal('inputBerat'));
-  const aktivFak = parseFloat(getVal('selectAktivitas'));
-  const goal     = document.querySelector('input[name="goal"]:checked').value;
+  const nama        = getVal('inputNama');
+  const umur        = parseFloat(getVal('inputUmur'));
+  const gender      = document.querySelector('input[name="gender"]:checked').value;
+  const tinggi      = parseFloat(getVal('inputTinggi'));
+  const berat       = parseFloat(getVal('inputBerat'));
+  const targetBerat = parseFloat(getVal('inputTargetBerat'));
+  const aktivFak    = parseFloat(getVal('selectAktivitas'));
+  
+  const intensityNode = document.querySelector('input[name="intensity"]:checked');
+  const intensity = intensityNode ? intensityNode.value : 'intensity-slow';
+  
+  let goal = 'maintain';
+  if (targetBerat < berat) {
+    goal = intensity === 'intensity-fast' ? 'lose-fast' : 'lose-slow';
+  } else if (targetBerat > berat) {
+    goal = intensity === 'intensity-fast' ? 'gain-fast' : 'gain-slow';
+  }
 
   const bmi    = calcBMI(berat, tinggi);
   const bmr    = calcBMR(berat, tinggi, umur, gender);
@@ -232,7 +255,7 @@ document.getElementById('calcForm').addEventListener('submit', function(e) {
   const macros = calcMacros(target, goal);
   const bmiCat = getBMICategory(bmi);
 
-  calcResult = { nama, umur, gender, tinggi, berat, aktivFak, goal, bmi, bmr, tdee, target, macros, bmiCat };
+  calcResult = { nama, umur, gender, tinggi, berat, targetBerat, aktivFak, goal, bmi, bmr, tdee, target, macros, bmiCat };
 
   populateResult(calcResult);
   seedInitialWeight(calcResult);
@@ -391,6 +414,43 @@ function generateDailyMenu(targetCal) {
   };
 }
 
+// generate target action tips
+function generateTargetActionTips(r, weightDiff) {
+  let tips = [];
+  if (weightDiff > 0) {
+    tips = [
+      { icon: 'flame', title: 'Defisit Kalori Konsisten', desc: `Untuk menurunkan ${weightDiff.toFixed(1)} kg, Anda perlu mempertahankan defisit kalori harian sebesar ${r.goal === 'lose-fast' ? '500' : '250'} kcal secara konsisten.` },
+      { icon: 'salad', title: 'Nutrisi Padat & Serat Tinggi', desc: 'Prioritaskan sayuran, buah-buahan, protein tanpa lemak (seperti dada ayam, ikan, tahu), dan kurangi makanan olahan atau gorengan.' },
+      { icon: 'activity', title: 'Olahraga & NEAT', desc: 'Lakukan olahraga kardio 3-4 kali seminggu ditambah latihan beban untuk mencegah hilangnya massa otot. Tingkatkan juga aktivitas non-olahraga (seperti berjalan kaki).' },
+      { icon: 'droplet', title: 'Hidrasi Cukup', desc: 'Minum minimal 2.5 - 3 liter air per hari untuk membantu metabolisme dan menekan rasa lapar palsu.' }
+    ];
+  } else if (weightDiff < 0) {
+    const absDiff = Math.abs(weightDiff);
+    tips = [
+      { icon: 'trending-up', title: 'Surplus Kalori Bersih (Clean Bulking)', desc: `Untuk menaikkan ${absDiff.toFixed(1)} kg, Anda perlu mengonsumsi surplus kalori sebesar ${r.goal === 'gain-fast' ? '500' : '250'} kcal di atas kebutuhan harian Anda.` },
+      { icon: 'dumbbell', title: 'Latihan Beban Terprogram', desc: 'Fokus pada latihan kekuatan (resistance training) 3-4 kali seminggu dengan prinsip beban bertambah secara bertahap (progressive overload) agar berat badan naik berupa otot, bukan lemak.' },
+      { icon: 'beef', title: 'Asupan Protein Tinggi', desc: 'Pastikan kebutuhan protein harian terpenuhi (sekitar 1.6 - 2.0 gram per kg berat badan) untuk mendukung pemulihan dan pembentukan otot baru.' },
+      { icon: 'battery-charging', title: 'Istirahat dan Regenerasi', desc: 'Tidur berkualitas selama 7-8 jam per hari. Otot tumbuh saat Anda beristirahat, bukan saat sedang latihan.' }
+    ];
+  } else {
+    tips = [
+      { icon: 'scale', title: 'Pertahankan Keseimbangan Energi', desc: 'Berat badan Anda sudah sesuai target. Fokus pada menjaga asupan kalori agar sama dengan pengeluaran energi harian (TDEE).' },
+      { icon: 'dumbbell', title: 'Fokus Rekomposisi Tubuh', desc: 'Anda bisa fokus pada pembentukan otot (toning) dan penurunan persentase lemak tubuh tanpa mengubah berat badan secara signifikan dengan latihan kekuatan.' },
+      { icon: 'heart', title: 'Kesehatan Jangka Panjang', desc: 'Jaga kebiasaan makan sehat, batasi junk food, serta pertahankan rutinitas olahraga demi kebugaran tubuh secara keseluruhan.' }
+    ];
+  }
+
+  return tips.map(t => `
+    <div class="tip-item" style="display: flex; gap: var(--sp-sm); align-items: flex-start; padding: 12px; border-radius: var(--r-md); background: rgba(252, 82, 0, 0.03); border-left: 3px solid var(--primary);">
+      <i data-lucide="${t.icon}" style="width: 20px; height: 20px; color: var(--primary); stroke-width: 2px; flex-shrink: 0; margin-top: 2px;"></i>
+      <div>
+        <h4 style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--neutral); margin-bottom: 2px;">${t.title}</h4>
+        <p style="font-family: var(--font-body); font-size: 13px; color: var(--on-surface-muted); line-height: 1.4;">${t.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
 // isi halaman hasil dengan data kalkulasi
 function populateResult(r) {
   document.getElementById('rhcName').textContent     = r.nama;
@@ -429,6 +489,29 @@ function populateResult(r) {
   document.getElementById('scoreStatus').style.color = match.color;
   document.getElementById('scoreCircle').style.borderColor = match.color;
   document.getElementById('scoreReason').textContent = match.reason;
+
+  // Analisis Target Berat Badan & Rencana Aksi
+  const weightDiff = r.berat - r.targetBerat;
+  let rate = 0;
+  if (r.goal === 'lose-fast') rate = 0.5;
+  else if (r.goal === 'lose-slow') rate = 0.25;
+  else if (r.goal === 'gain-fast') rate = 0.5;
+  else if (r.goal === 'gain-slow') rate = 0.25;
+
+  let timeEstimateStr = '–';
+  if (rate > 0 && Math.abs(weightDiff) > 0) {
+    const weeks = Math.ceil(Math.abs(weightDiff) / rate);
+    timeEstimateStr = `~${weeks} minggu`;
+  } else if (Math.abs(weightDiff) === 0) {
+    timeEstimateStr = '0 minggu';
+  } else {
+    timeEstimateStr = 'N/A';
+  }
+
+  document.getElementById('resTargetWeight').textContent = `${r.targetBerat} kg`;
+  document.getElementById('resWeightDiff').textContent = `${weightDiff > 0 ? 'Turun' : weightDiff < 0 ? 'Naik' : ''} ${Math.abs(weightDiff).toFixed(1)} kg`;
+  document.getElementById('resTimeEstimate').textContent = timeEstimateStr;
+  document.getElementById('targetActionTips').innerHTML = generateTargetActionTips(r, weightDiff);
 
   // 2. Health Alerts Validasi Kesehatan
   const alerts = validateDietHealth(r);
@@ -475,6 +558,7 @@ function saveToHistory(r) {
     gender: r.gender,
     height: r.tinggi,
     weight: r.berat,
+    targetWeight: r.targetBerat,
     activity: r.aktivFak,
     goal: r.goal,
     target: r.target,
@@ -514,6 +598,7 @@ function renderDashboard() {
     'gain-fast': 'Gain Weight Fast'
   };
   document.getElementById('dGoal').textContent   = dashGoalLabels[r.goal] || r.goal;
+  document.getElementById('dTargetWeight').textContent = (r.targetBerat || r.berat) + ' kg';
   document.getElementById('dBMI').textContent    = r.bmi.toFixed(1) + ' – ' + r.bmiCat.label;
   document.getElementById('dKalori').textContent = r.target.toLocaleString('id-ID') + ' kcal';
 
@@ -853,6 +938,12 @@ function clearResultsPage() {
   document.getElementById('conclusionText').innerHTML = '';
   document.getElementById('healthAlert').style.display = 'none';
 
+  // Target Weight Analysis
+  document.getElementById('resTargetWeight').textContent = '– kg';
+  document.getElementById('resWeightDiff').textContent = '– kg';
+  document.getElementById('resTimeEstimate').textContent = '– minggu';
+  document.getElementById('targetActionTips').innerHTML = '';
+
   // Diet Match Score
   document.getElementById('scoreText').textContent = '--%';
   document.getElementById('scoreStatus').textContent = 'Mengevaluasi...';
@@ -879,7 +970,7 @@ function resetForm() {
   document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
   
   // Reset pilihan radio manual untuk kompatibilitas browser
-  document.querySelectorAll('input[name="goal"]').forEach(r => r.checked = false);
+  document.querySelectorAll('input[name="intensity"]').forEach(r => r.checked = false);
   document.querySelectorAll('input[name="gender"]').forEach(r => r.checked = false);
 
   calcResult = null;
@@ -902,6 +993,47 @@ window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
   nav.style.boxShadow = window.scrollY > 10 ? '0 2px 16px rgba(0,0,0,0.10)' : '';
 }, { passive: true });
+
+// Dynamic UI for Intensity
+function updateIntensityUI() {
+  const berat = parseFloat(document.getElementById('inputBerat').value);
+  const targetBerat = parseFloat(document.getElementById('inputTargetBerat').value);
+  const fgGoal = document.getElementById('fg-goal');
+  
+  if (!fgGoal) return;
+  
+  if (isNaN(berat) || isNaN(targetBerat) || targetBerat === berat) {
+    fgGoal.style.display = (targetBerat === berat && !isNaN(berat)) ? 'none' : 'block';
+    return;
+  }
+  
+  fgGoal.style.display = 'block';
+  const isGain = targetBerat > berat;
+  
+  const lblSlow = document.querySelector('label[data-value="intensity-slow"] .goal-name');
+  const iconSlow = document.querySelector('label[data-value="intensity-slow"] .goal-icon');
+  const lblFast = document.querySelector('label[data-value="intensity-fast"] .goal-name');
+  const iconFast = document.querySelector('label[data-value="intensity-fast"] .goal-icon');
+  
+  if (isGain) {
+    if(lblSlow) lblSlow.textContent = 'Naik Perlahan';
+    if(iconSlow) iconSlow.setAttribute('data-lucide', 'trending-up');
+    if(lblFast) lblFast.textContent = 'Bulking Cepat';
+    if(iconFast) iconFast.setAttribute('data-lucide', 'dumbbell');
+  } else {
+    if(lblSlow) lblSlow.textContent = 'Turun Perlahan';
+    if(iconSlow) iconSlow.setAttribute('data-lucide', 'trending-down');
+    if(lblFast) lblFast.textContent = 'Cutting Cepat';
+    if(iconFast) iconFast.setAttribute('data-lucide', 'flame');
+  }
+  
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+document.getElementById('inputBerat').addEventListener('input', updateIntensityUI);
+document.getElementById('inputTargetBerat').addEventListener('input', updateIntensityUI);
 
 // Inisialisasi entri berat badan pertama kali dari kalkulator jika kosong
 function seedInitialWeight(r) {
